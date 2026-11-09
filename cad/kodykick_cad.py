@@ -1,9 +1,13 @@
 # KodyKick — robot soccer 2WD untuk anak (KodingYuk). CAD parametrik FreeCAD 1.1 headless.
 #   "C:/Users/tunas/AppData/Local/Programs/FreeCAD 1.1/bin/freecadcmd.exe" kodykick_cad.py
 # Satuan mm, Z ke atas, +Y = depan robot. Origin robot = titik tanah di bawah tengah poros roda.
-# Output -> ../out/parts/*.stl, ../out/parts.json (warna, grup, bbox), ../out/kodykick.step,
+# Output -> ../out/parts/*.stl, ../out/parts.json (warna, grup, bbox, sumber), ../out/kodykick.step,
 #           ../out/kodypad.step, ../out/kodyarena.step
-# Grup part: robot (cetak 3D + komponen beli), pad (remote DIY), arena (triplek 9 mm 122x244), ball.
+# Komponen beli dipakai model ASLI (STEP) dari ../components/ (lihat components/LICENSES.md):
+#   TT motor, holder 4xAA, holder 3xAAA, joystick, tactile 12 mm, saklar geser = Adafruit_CAD_Parts (MIT)
+#   SG90 + horn = FreeCAD-library (CC-BY 3.0) · modul ESP32-WROOM-32E = espressif/kicad-libraries (CC-BY-SA 4.0)
+# Yang masih dimodelkan dari dimensi datasheet (tidak ada STEP publik): PCB DevKit V1 30-pin (modul WROOM asli),
+#   PCB KY-023 (joystick asli), modul DRV8833, roda TT 65 mm, bola floorball, bola baja caster.
 import json
 import math
 import os
@@ -16,6 +20,7 @@ V = App.Vector
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "out")
 PARTS = os.path.join(OUT, "parts")
+COMP = os.path.join(HERE, "..", "components")
 os.makedirs(PARTS, exist_ok=True)
 
 C = {  # warna sRGB hex -> Blender
@@ -23,27 +28,31 @@ C = {  # warna sRGB hex -> Blender
     "teal": "#0C7A89", "sun": "#F99007", "pcb": "#1b5e3a", "pcb_blue": "#1f3f8f", "pcb_red": "#9b1c1c",
     "metal": "#b9bdc2", "black": "#16181a", "tt_yellow": "#f2c230", "tire": "#2b2b2b", "rim": "#f2e26b",
     "white": "#fafafa", "wood": "#d9b98a", "green": "#2e8b3c", "line": "#f5f5f5", "glass": "#9fd8ff",
-    "servo_blue": "#2a62c9", "orange": "#ff7a1a",
+    "servo_blue": "#2a62c9", "orange": "#ff7a1a", "shield": "#c9ccd1",
 }
 
 # ------------------------------------------------------------------ parameter utama
-WHEEL_D, WHEEL_W = 65.0, 26.0          # roda TT kuning 65 mm
+WHEEL_D, WHEEL_W = 65.0, 26.0          # roda TT 65 mm
 AXLE_Z = WHEEL_D / 2                   # 32.5
-MOTOR_L, MOTOR_T, MOTOR_H = 70.0, 18.5, 22.5   # TT gear motor (panjang y, tebal x, tinggi z)
-SHAFT_FROM_FRONT = 11.0                # poros 11 mm dari ujung depan gearbox
-BASE_W, BASE_FRONT, BASE_REAR = 108.0, 80.0, -78.0
+MOTOR_LEN_BACK, MOTOR_LEN_FRONT = 54.6, 16.0   # dari STEP Adafruit 3777: badan -54.6..+16 relatif poros
+MOTOR_T_IN, MOTOR_T_OUT = 9.3, 11.3    # tebal sepanjang poros: 9.3 ke dalam, 11.3 ke luar (asimetris)
+MOTOR_H = 22.4                         # tinggi gearbox
+BASE_W, BASE_FRONT, BASE_REAR = 114.0, 80.0, -86.0
 BASE_T = 3.0
-BASE_TOP = AXLE_Z - MOTOR_H / 2        # 21.25 -> motor duduk di atas pelat, poros tepat di tengah
-BASE_BOT = BASE_TOP - BASE_T           # 18.25 ground clearance
+BASE_TOP = AXLE_Z - MOTOR_H / 2        # 21.3 -> motor duduk di atas pelat, poros tepat di tengah
+BASE_BOT = BASE_TOP - BASE_T           # 18.3 ground clearance
 WALL = 2.0
 SHELL_TOP = 72.0
 BALL_D = 72.0                          # bola plastik berlubang (floorball) 72 mm
-SCOOP_R = BALL_D / 2 + 4               # radius cekungan penangkap bola
-SCOOP_CY = 92.0                        # pusat cekungan (y) -> bola nyangkut di depan robot
-WHEEL_X = BASE_W / 2 + 2 + WHEEL_W / 2   # 67 -> lebar total 160 mm
-SERVO_XY = (-22.0, 50.0)                # servo kicker (poros vertikal), kiri-depan
+SCOOP_R = BALL_D / 2 + 4
+SCOOP_CY = 92.0
+WHEEL_X = BASE_W / 2 + 2 + WHEEL_W / 2   # 72 -> lebar total 170 mm
+SERVO_XY = (-22.0, 50.0)               # poros servo kicker (vertikal), kiri-depan
+SERVO_BOT = 11.3                       # dasar badan servo (menggantung lewat slot lantai)
+MOTOR_X = BASE_W / 2 - WALL - 1.0 - MOTOR_T_OUT   # 42.7 -> pusat poros motor (muka luar 1 mm dari dinding)
 PARTS_META = []
 SHAPES = {}
+_STEP = {}
 
 
 # ------------------------------------------------------------------ primitif
@@ -91,29 +100,65 @@ def cut(s, *tools):
     return s
 
 
-def add(name, shape, color, group, note="", printed=False, qty=1, mesh_dev=0.08):
+def step(name):
+    """Baca STEP dari components/ (cache)."""
+    if name not in _STEP:
+        _STEP[name] = Part.read(os.path.join(COMP, name))
+    return _STEP[name].copy()
+
+
+def solids(shape, idx):
+    return Part.makeCompound([shape.Solids[i] for i in idx]) if len(idx) > 1 else shape.Solids[idx[0]]
+
+
+def xform(shape, matrix=None, move=(0, 0, 0)):
+    s = shape.copy()
+    if matrix is not None:
+        s = s.transformShape(matrix)
+    s.translate(V(*move))
+    return s
+
+
+def add(name, shape, color, group, note="", printed=False, qty=1, mesh_dev=0.08, source="dimodelkan dari datasheet"):
     path = os.path.join(PARTS, name + ".stl")
     m = MeshPart.meshFromShape(Shape=shape, LinearDeflection=mesh_dev, AngularDeflection=0.3, Relative=False)
     m.write(path)
     bb = shape.BoundBox
-    PARTS_META.append(dict(name=name, color=color, group=group, note=note, printed=printed, qty=qty,
+    PARTS_META.append(dict(name=name, color=color, group=group, note=note, printed=printed, qty=qty, source=source,
                            volume_cm3=round(shape.Volume / 1000, 2) if printed else None,
                            bbox=[round(v, 2) for v in (bb.XMin, bb.YMin, bb.ZMin, bb.XMax, bb.YMax, bb.ZMax)]))
     SHAPES.setdefault(group, []).append((name, shape))
     return shape
 
 
-# ================================================================== ROBOT: komponen beli
+SRC_ADA = "Adafruit_CAD_Parts (MIT)"
+SRC_FC = "FreeCAD-library (CC-BY 3.0)"
+SRC_ESP = "espressif/kicad-libraries (CC-BY-SA 4.0)"
+
+# matriks: X' = y, Y' = z, Z' = x  (poros TT motor native Y -> X robot; panjang native Z -> Y robot)
+M_TT = App.Matrix(0, 1, 0, 0,
+                  0, 0, 1, 0,
+                  1, 0, 0, 0,
+                  0, 0, 0, 1)
+# tactile: sumbu tombol native +Y -> +Z  (rotasi +90 deg sekitar X: y->z, z->-y)
+M_ROTX90 = App.Matrix(1, 0, 0, 0,
+                      0, 0, -1, 0,
+                      0, 1, 0, 0,
+                      0, 0, 0, 1)
+
+
+# ================================================================== ROBOT: komponen beli (STEP asli)
 def tt_motor(side):
-    """TT gear motor + poros ganda. side=+1 kanan. Poros di y=0, z=AXLE_Z. Body ke belakang."""
-    x = side * (BASE_W / 2 - WALL - 1.0 - MOTOR_T / 2)
-    y0 = SHAFT_FROM_FRONT - MOTOR_L                       # -59 .. +11
-    gear = Part.makeBox(MOTOR_T, 37.0, MOTOR_H, V(x - MOTOR_T / 2, y0 + MOTOR_L - 37.0, AXLE_Z - MOTOR_H / 2))
-    motor = cyl(10.0, MOTOR_L - 37.0, x, y0, AXLE_Z, V(0, 1, 0))
-    xin = x - side * (MOTOR_T / 2 + 5.0)
-    xout = x + side * (MOTOR_T / 2 + WHEEL_W + 4.0)
-    shaft = cyl(2.6, abs(xout - xin), min(xin, xout), 0, AXLE_Z, V(1, 0, 0))
-    return fuse(gear, motor), shaft, x
+    """Adafruit 3777 TT motor. Native: poros sepanjang Y di origin, badan Z -54.6..16, tebal Y -11.3..9.3.
+    Setelah M_TT: poros sepanjang X, badan Y -54.6..16, tebal X -11.3..9.3 (sisi -X = sisi 11.3)."""
+    s = xform(step("tt_motor_adafruit3777.step"), M_TT)
+    if side > 0:                                    # kanan: cermin supaya sisi tebal (11.3) ke luar (+X)
+        s = s.mirror(V(0, 0, 0), V(1, 0, 0))
+    s.translate(V(side * MOTOR_X, 0, AXLE_Z))
+    gear = solids(s, [0, 5, 6, 7])
+    can = solids(s, [2, 3, 4])
+    shaft = s.Solids[1]
+    return gear, can, shaft
 
 
 def wheel(side):
@@ -135,14 +180,15 @@ def wheel(side):
 
 
 def esp32_devkit(x, y, z):
-    """ESP32 DevKit V1 30 pin: PCB 51.5x28.3, modul WROOM, 2 header. USB micro di -y."""
+    """ESP32 DevKit V1 30 pin: PCB 51.5x28.3 (datasheet DOIT) + modul ESP32-WROOM-32E ASLI (Espressif).
+    Antena modul menghadap +Y (depan), micro-USB di -Y."""
     pcb = rbox(28.3, 51.5, 1.6, 1.5, z, x, y)
-    module = Part.makeBox(18.0, 25.5, 3.2, V(x - 9, y + 25.75 - 25.5 - 2, z + 1.6))
-    can = Part.makeBox(16.0, 18.0, 3.0, V(x - 8, y + 25.75 - 18.5 - 2, z + 1.8))
+    mod = step("esp32_wroom_32e_espressif.step")            # 18 x 25.5 x 3.1, origin pojok
+    mod.translate(V(x - 9.0, y + 25.75 - 25.5 - 1.0, z + 1.6 - 0.1))
     usb = Part.makeBox(7.5, 5.6, 2.8, V(x - 3.75, y - 25.75 - 1.5, z + 1.6))
     hdr = fuse(Part.makeBox(2.54, 38.1, 8.5, V(x - 14.15 + 1.0, y - 19.05, z - 8.5)),
                Part.makeBox(2.54, 38.1, 8.5, V(x + 14.15 - 3.54, y - 19.05, z - 8.5)))
-    return pcb, fuse(module, can), usb, hdr
+    return pcb, mod, usb, hdr
 
 
 def drv8833(x, y, z):
@@ -152,28 +198,29 @@ def drv8833(x, y, z):
 
 
 def aa_holder(x, y, z):
-    """Holder 4xAA 2x2 datar: 58 x 62 x 15."""
-    body = rbox(58.0, 62.0, 15.0, 2.0, z, x, y)
-    xs = (-21.75, -7.25, 7.25, 21.75)
-    body = cut(body, *[cyl(7.3, 56.0, x + i, y - 28.0, z + 8.0, V(0, 1, 0)) for i in xs])
-    cells = fuse(*[cyl(7.0, 50.0, x + i, y - 25.0, z + 8.0, V(0, 1, 0)) for i in xs])
-    return body, cells
+    """Adafruit 830: holder 4xAA 2x2 dengan saklar, 64.6 x 70 x 22.3. Pojok native (0,0,0) -> pusat (x,y)."""
+    s = step("battery_holder_4xAA_adafruit830.step")
+    s.translate(V(x - 32.3, y - 35.0, z + 0.2))
+    return s.Solids[1], s.Solids[0]
 
 
-def sg90(x, y, z):
-    """SG90 poros VERTIKAL. (x,y,z) = pusat atas poros. Body 22.5 x 12.2 x 22.7 menggantung ke bawah."""
-    body = Part.makeBox(22.5, 12.2, 22.7, V(x - 22.5 + 6.0, y - 6.1, z - 22.7 - 4.0))
-    ears = Part.makeBox(32.3, 12.2, 2.5, V(x - 22.5 + 6.0 - 4.9, y - 6.1, z - 22.7 - 4.0 + 16.0))
-    boss = cyl(6.0, 4.0, x, y, z - 4.0)
-    shaft = cyl(2.4, 4.0, x, y, z)
-    horn = fuse(cyl(3.5, 1.6, x, y, z + 2.4), Part.makeBox(18.0, 4.0, 1.6, V(x, y - 2.0, z + 2.4)))
-    return fuse(body, ears, boss), shaft, horn
+def sg90(x, y, z_bot):
+    """FreeCAD-library SG90: tegak, poros Z di (0,16.6), dasar z=0, atas poros z=29.9, telinga sepanjang Y.
+    (x,y) = pusat poros robot; z_bot = dasar badan."""
+    body = step("sg90_freecadlib.step")
+    body.translate(V(x, y - 16.6, z_bot))
+    horn = step("sg90_horn1_freecadlib.step")             # hub di (27,36.3), dasar z 25.7, lengan ke +X
+    horn.translate(V(x - 27.0, y - 36.3, z_bot + 29.9 - 3.0 - 25.7))   # hub turun 3 mm ke spline poros
+    return body, horn
 
 
-def slide_switch(x, y, z):
-    body = Part.makeBox(12.0, 6.0, 6.0, V(x - 6, y - 3, z))
-    knob = Part.makeBox(3.5, 2.5, 4.0, V(x + 0.25, y - 1.25, z + 6))
-    return body, knob
+def slide_switch(x, y, z, rot_z=0.0):
+    """Adafruit 805 saklar geser 11.7 x 4 x 8 (z -6.3..1.7). (x,y,z) = pusat bawah badan."""
+    s = step("slide_switch_adafruit805.step")
+    if rot_z:
+        s.rotate(V(0, 0, 0), V(0, 0, 1), rot_z)
+    s.translate(V(x - 5.85, y + 2.0, z + 6.3))
+    return s
 
 
 # ================================================================== ROBOT: part cetak
@@ -185,37 +232,35 @@ def base_tray():
     tray = outer.cut(inner)
     for s in (-1, 1):
         xw = s * BASE_W / 2
-        slot = Part.makeBox(WALL + 1.0, 7.0, 20.0, V(xw - (WALL + 1.0) / 2, -3.5, AXLE_Z - 3.5))
-        tray = tray.cut(slot)
+        tray = tray.cut(Part.makeBox(WALL + 1.0, 7.0, 20.0, V(xw - (WALL + 1.0) / 2, -3.5, AXLE_Z - 3.5)))
         tray = tray.cut(cyl(3.5, WALL + 1.0, xw - (WALL + 1.0) / 2, 0, AXLE_Z, V(1, 0, 0)))
+    x_in_motor = MOTOR_X - MOTOR_T_IN                     # 33.4 = muka dalam motor
     for s in (-1, 1):
-        x_in_wall = s * (BASE_W / 2 - WALL)                     # muka dalam dinding
-        x_motor_in = s * (BASE_W / 2 - WALL - 1.0 - MOTOR_T)    # sisi dalam motor
-        xa, xb = sorted((x_in_wall, x_motor_in - s * 2.0))
-        for yy in (SHAFT_FROM_FRONT + 1.0, SHAFT_FROM_FRONT - MOTOR_L - 2.0):
+        for yy, xin in ((MOTOR_LEN_FRONT + 1.0, x_in_motor - 2.0), (-MOTOR_LEN_BACK - 3.0, x_in_motor + 0.6)):
+            xa, xb = sorted((s * (BASE_W / 2 - WALL), s * xin))        # klem depan gearbox & belakang kaleng
             tray = tray.fuse(Part.makeBox(xb - xa, 2.0, 14.0, V(xa, yy, BASE_TOP)))
-        rx = min(x_motor_in, x_motor_in - s * 2.0)
-        for yy in (-24.0, 4.0):
+        rx = min(s * x_in_motor, s * (x_in_motor - 2.0))
+        for yy in (-11.0,):                               # tiang pendek sisi dalam motor (depan gearbox)
             tray = tray.fuse(Part.makeBox(2.0, 3.0, 12.0, V(rx, yy, BASE_TOP)))
-    cup_x, cup_y = 0.0, BASE_REAR + 14.0
+    cup_x, cup_y = 0.0, BASE_REAR + 10.0                  # caster di belakang holder baterai
     cup = cyl(9.5, BASE_TOP - 6.0, cup_x, cup_y, 6.0)
     cup = cup.cut(Part.makeSphere(6.6, V(cup_x, cup_y, 6.6)))
     cup = cup.cut(cyl(5.0, 8.0, cup_x, cup_y, 0.0))
     tray = tray.fuse(cup)
-    for sx, sy in ((-46, -72), (46, -72), (-46, 44), (46, 44)):
+    for sx, sy in ((-50, -80), (50, -80), (-50, 44), (50, 44)):   # pilar snap shell
         tray = tray.fuse(cyl(3.0, 10.0, sx, sy, BASE_TOP))
-    for sx, sy in ((-12 - 11.4, 16 + 24), (-12 + 11.4, 16 + 24), (-12 - 11.4, 16 - 24), (-12 + 11.4, 16 - 24)):
+    for sx, sy in ((-1 - 11.4, 15 + 24), (-1 + 11.4, 15 + 24), (-1 - 11.4, 15 - 24), (-1 + 11.4, 15 - 24)):
         tray = tray.fuse(cyl(2.6, 4.0, sx, sy, BASE_TOP).cut(cyl(1.2, 4.0, sx, sy, BASE_TOP)))
-    tray = tray.cut(Part.makeBox(23.5, 12.8, 10.0, V(SERVO_XY[0] - 22.5 + 6.0 - 0.5, SERVO_XY[1] - 6.4, BASE_BOT)))
+    # slot servo (badan SG90 asli: x +-5.9, y -16.6..+6.1 relatif poros)
+    tray = tray.cut(Part.makeBox(12.8, 23.7, 10.0, V(SERVO_XY[0] - 6.4, SERVO_XY[1] - 17.1, BASE_BOT)))
     for sx in (-20, 0, 20):
-        for sy in (-40, 30):
+        for sy in (-50, 30):
             tray = tray.cut(cyl(5.0, 10.0, sx, sy, BASE_BOT))
-    tray = tray.cut(Part.makeBox(14.0, WALL + 1.0, 8.0, V(-42.0, BASE_REAR - 0.5, BASE_TOP)))
+    tray = tray.cut(Part.makeBox(14.0, WALL + 1.0, 8.0, V(-46.0, BASE_REAR - 0.5, BASE_TOP)))  # kabel/saklar
     return tray.removeSplitter()
 
 
 def top_shell():
-    """Cangkang atas: badan bulat + dua lengan penangkap bola (scoop), mata LED, slot sirip tim."""
     z0 = BASE_BOT + 10.0
     body_front = 46.0
     d = body_front - BASE_REAR
@@ -232,18 +277,17 @@ def top_shell():
     shell = shell.cut(rbox(44.0, 44.0, 1.0, 4.0, SHELL_TOP - 1.0, 0, -5.0))
     for sx in (-20, 20):
         shell = shell.cut(cyl(5.0, 30.0, sx, body_front - 15.0, 55.0, V(0, 1, 0)))
-    shell = shell.cut(Part.makeBox(2.6, 32.0, 3.0, V(-1.3, -62.0, SHELL_TOP - 3.0)))
-    shell = shell.cut(Part.makeBox(14.0, 10.0, 9.0, V(-42.0, BASE_REAR - 5.0, z0)))
+    shell = shell.cut(Part.makeBox(2.6, 32.0, 3.0, V(-1.3, -66.0, SHELL_TOP - 3.0)))
+    shell = shell.cut(Part.makeBox(14.0, 10.0, 9.0, V(-46.0, BASE_REAR - 5.0, z0)))
     for s in (-1, 1):
         shell = shell.cut(Part.makeBox(WALL + 3.0, 8.0, 8.0, V(s * BASE_W / 2 - (WALL + 3.0) / 2, -4.0, z0 - 0.1)))
-    # jendela kicker di dinding dalam scoop
-    shell = shell.cut(Part.makeBox(52.0, 30.0, 26.0, V(-26.0, 40.0, 28.0)))
+    shell = shell.cut(Part.makeBox(56.0, 30.0, 26.0, V(-30.0, 40.0, 28.0)))     # jendela kicker
     return shell.removeSplitter()
 
 
 def fin():
-    f = Part.makeBox(2.4, 32.0, 3.0, V(-1.2, -62.0, SHELL_TOP - 3.0))
-    blade = Part.makeBox(2.4, 28.0, 14.0, V(-1.2, -60.0, SHELL_TOP))
+    f = Part.makeBox(2.4, 32.0, 3.0, V(-1.2, -66.0, SHELL_TOP - 3.0))
+    blade = Part.makeBox(2.4, 28.0, 14.0, V(-1.2, -64.0, SHELL_TOP))
     try:
         blade = blade.makeFillet(5.0, [e for e in blade.Edges if abs(e.BoundBox.ZMax - (SHELL_TOP + 14.0)) < 1e-6
                                         and abs(e.BoundBox.ZMin - (SHELL_TOP + 14.0)) < 1e-6 and abs(e.Length - 2.4) < 1e-6])
@@ -260,13 +304,14 @@ def eye_lens(sx):
     return cyl(4.8, 3.0, sx, 46.0 - 1.0, 55.0, V(0, 1, 0))
 
 
-def kicker(servo_xyz):
-    """Pemukul bola di horn servo (poros vertikal): lengan berayun horizontal, paddle menampar bola."""
-    x, y, z = servo_xyz
-    hub = cyl(5.0, 3.0, x, y, z + 4.0).cut(cyl(2.5, 3.0, x, y, z + 4.0))
-    arm = Part.makeBox(32.0, 4.0, 3.0, V(x, y + 2.0, z + 4.0))               # ke +x sampai x=+10
-    arm2 = Part.makeBox(4.0, 5.0, 3.0, V(x + 28.0, y + 4.0, z + 4.0))
-    paddle = rbox(36.0, 3.0, 22.0, 1.0, z - 8.0, 6.0, y + 6.5)                   # melintang x -12..24, y 55..58
+def kicker(horn_top_z):
+    """Pemukul bola cetak, disekrup ke horn servo asli: cakram hub di atas horn, lengan ke +X, paddle melintang."""
+    x, y = SERVO_XY
+    z = horn_top_z
+    hub = cyl(6.0, 2.0, x, y, z).cut(cyl(1.0, 2.0, x, y, z))
+    arm = Part.makeBox(32.0, 4.0, 3.0, V(x, y + 2.0, z))
+    arm2 = Part.makeBox(4.0, 5.0, 3.0, V(x + 28.0, y + 4.0, z))
+    paddle = rbox(36.0, 3.0, 22.0, 1.0, 30.0, 6.0, y + 6.5)
     return fuse(hub, arm, arm2, paddle)
 
 
@@ -277,6 +322,8 @@ def ball(x=0.0, y=SCOOP_CY, z=BALL_D / 2):
 # ================================================================== KODYPAD (remote DIY ESP-NOW)
 PAD_W, PAD_D, PAD_H = 150.0, 74.0, 26.0
 PAD_SPLIT = 9.0
+JZ = PAD_SPLIT - 2.0          # dasar PCB di pad
+PCB_TOP = JZ + 1.6
 
 
 def pad_shells():
@@ -296,32 +343,39 @@ def pad_shells():
     top = top.cut(cyl(9.5, 20.0, 45.0, 10.0, PAD_H - 10.0))
     top = top.cut(cyl(6.5, 20.0, 25.0, -2.0, PAD_H - 10.0))
     top = top.cut(cyl(6.5, 20.0, 65.0, -2.0, PAD_H - 10.0))
-    top = top.cut(cyl(2.0, 20.0, 0.0, 18.0, PAD_H - 10.0))
-    top = top.cut(Part.makeBox(9.0, 4.0, 20.0, V(-4.5, 26.0, PAD_H - 10.0)))
+    top = top.cut(cyl(2.0, 20.0, 0.0, 30.0, PAD_H - 10.0))
+    top = top.cut(Part.makeBox(9.0, 4.0, 20.0, V(-44.5, 26.0, PAD_H - 10.0)))       # saklar geser
     top = top.cut(rbox(30.0, 10.0, 1.0, 2.0, PAD_H - 1.0, 0, 0))
-    top = top.cut(Part.makeBox(10.0, 6.0, 5.0, V(-5.0, -PAD_D / 2 - 1.0, 16.0)))
+    top = top.cut(Part.makeBox(10.0, 6.0, 6.0, V(-5.0, -PAD_D / 2 - 1.0, 19.0)))     # USB-C C3 (belakang)
     for sx, sy in ((-58, 18), (-32, 18), (26, 16), (64, 16)):
-        bottom = bottom.fuse(cyl(3.0, 6.0, sx, sy, WALL).cut(cyl(1.2, 6.0, sx, sy, WALL)))
+        bottom = bottom.fuse(cyl(3.0, JZ - WALL, sx, sy, WALL).cut(cyl(1.2, JZ - WALL, sx, sy, WALL)))
     return top.removeSplitter(), bottom.removeSplitter()
 
 
 def pad_internals():
-    parts = {}
-    jx, jy, jz = -45.0, 4.0, PAD_SPLIT - 2.0
-    parts["pad_joy_pcb"] = rbox(26.0, 34.0, 1.6, 1.0, jz, jx, jy)
-    parts["pad_joy_body"] = fuse(Part.makeBox(16.0, 16.0, 9.0, V(jx - 8, jy - 8, jz + 1.6)), cyl(4.0, 8.0, jx, jy, jz + 10.6))
-    parts["pad_joy_cap"] = fuse(cyl(10.0, 5.0, jx, jy, PAD_H - 1.0), cyl(7.0, 6.0, jx, jy, PAD_H - 7.0))
-    for name, (bx, by, r) in {"kick": (45.0, 10.0, 9.0), "turbo": (25.0, -2.0, 6.0), "horn": (65.0, -2.0, 6.0)}.items():
-        parts["pad_btn_" + name] = fuse(Part.makeBox(12.0, 12.0, 7.3, V(bx - 6, by - 6, jz + 1.6)), cyl(r, 5.0, bx, by, PAD_H - 3.0))
-    parts["pad_main_pcb"] = rbox(48.0, 30.0, 1.6, 2.0, jz, 45.0, 4.0)        # PCB tombol kanan
-    parts["pad_c3"] = fuse(rbox(18.0, 22.5, 1.0, 1.0, 16.0, 0.0, -24.0),       # C3 di atas holder, USB-C ke belakang
-                           Part.makeBox(12.0, 13.0, 2.4, V(-6.0, -27.0, 17.0)),
-                           Part.makeBox(9.0, 7.0, 3.2, V(-4.5, -36.5, 17.0)))
-    parts["pad_aaa"] = rbox(38.0, 52.0, 13.0, 2.0, WALL + 0.5, 0.0, -2.0)
-    parts["pad_led"] = cyl(1.6, 6.0, 0.0, 18.0, PAD_H - 6.0)
-    sw_body, sw_knob = slide_switch(0.0, 26.0, PAD_H - 9.0)
-    parts["pad_switch"] = fuse(sw_body, sw_knob)
-    return parts
+    p = {}
+    jx, jy = -45.0, 4.0
+    p["pad_joy_pcb"] = (rbox(26.0, 34.0, 1.6, 1.0, JZ, jx, jy), "pcb", "PCB modul KY-023 (dimodelkan)", None)
+    joy = step("joystick_adafruit512.step")                 # PCB Adafruit (solid0) dibuang, joystick asli dipakai
+    joy = solids(joy, list(range(1, 9)))
+    joy.translate(V(jx - 19.1, jy - 19.1, PCB_TOP - 1.6))
+    p["pad_joy_body"] = (joy, "black", "joystick analog 2 sumbu + tombol (KY-023)", SRC_ADA)
+    p["pad_joy_cap"] = (fuse(cyl(10.0, 5.0, jx, jy, PAD_H - 1.0), cyl(7.0, 7.0, jx, jy, PAD_H - 8.0)), "ink", "cap joystick (cetak PLA)", None)
+    for name, (bx, by, r, col) in {"kick": (45.0, 10.0, 9.0, "red"), "turbo": (25.0, -2.0, 6.0, "teal"), "horn": (65.0, -2.0, 6.0, "sun")}.items():
+        sw = xform(step("tactile12_adafruit1119.step"), M_ROTX90, (bx, by, PCB_TOP))   # badan z 0..3.8, aktuator ..6
+        p["pad_tact_" + name] = (sw, "black", "tactile 12x12 mm B3F", SRC_ADA)
+        p["pad_cap_" + name] = (cyl(r, PAD_H + 2.0 - (PCB_TOP + 5.5), bx, by, PCB_TOP + 5.5), col, "cap tombol (cetak PLA)", None)
+    p["pad_main_pcb"] = (rbox(48.0, 30.0, 1.6, 2.0, JZ, 45.0, 4.0), "pcb", "perfboard tombol kanan", None)
+    aaa = step("battery_holder_3xAAA_adafruit727.step")      # 37 x 63(+JST 66) x 17.3, pojok native (0,0,0)
+    aaa.translate(V(-18.5, -33.0, WALL + 0.5))
+    p["pad_aaa"] = (aaa, "black", "holder 3xAAA + JST", SRC_ADA)
+    c3z = WALL + 0.5 + 17.3 + 0.2
+    p["pad_c3"] = (fuse(rbox(18.0, 22.5, 1.0, 1.0, c3z, 0.0, -24.0),
+                        Part.makeBox(12.0, 13.0, 2.2, V(-6.0, -27.0, c3z + 1.0)),
+                        Part.makeBox(9.0, 7.0, 2.8, V(-4.5, -36.5, c3z + 1.0))), "black", "ESP32-C3 Super Mini (dimodelkan)", None)
+    p["pad_led"] = (cyl(1.6, 6.0, 0.0, 30.0, PAD_H - 6.0), "glass", "LED 3 mm", None)
+    p["pad_switch"] = (slide_switch(-40.0, 26.0, PAD_H - 8.5), "black", "saklar geser SPDT", SRC_ADA)
+    return p
 
 
 # ================================================================== KODYARENA (triplek 9 mm, 122 x 244 cm)
@@ -366,55 +420,49 @@ def arena_parts():
 
 # ================================================================== BUILD
 def build_robot():
-    add("robot_base_tray", base_tray(), "navy", "robot", "cetak PLA, tray bawah: motor, baterai, ESP32, caster", printed=True)
-    add("robot_top_shell", top_shell(), "yellow", "robot", "cetak PLA, cangkang + scoop bola", printed=True)
-    add("robot_fin", fin(), "red", "robot", "cetak PLA, sirip tim (warna tim)", printed=True)
-    add("robot_number_card", number_card(), "paper", "robot", "kartu nomor punggung (cetak kertas/PLA)", printed=True)
+    add("robot_base_tray", base_tray(), "navy", "robot", "cetak PLA, tray bawah: motor, baterai, ESP32, caster", printed=True, source="desain KodingYuk")
+    add("robot_top_shell", top_shell(), "yellow", "robot", "cetak PLA, cangkang + scoop bola", printed=True, source="desain KodingYuk")
+    add("robot_fin", fin(), "red", "robot", "cetak PLA, sirip tim (warna tim)", printed=True, source="desain KodingYuk")
+    add("robot_number_card", number_card(), "paper", "robot", "kartu nomor punggung", printed=True, source="desain KodingYuk")
     for s in (-1, 1):
-        add(f"robot_eye_{'l' if s < 0 else 'r'}", eye_lens(s * 20.0), "glass", "robot", "lensa LED mata (PLA transparan)", printed=True)
+        add(f"robot_eye_{'l' if s < 0 else 'r'}", eye_lens(s * 20.0), "glass", "robot", "lensa LED mata (PLA transparan)", printed=True, source="desain KodingYuk")
     for s in (-1, 1):
-        body, shaft, mx = tt_motor(s)
         tag = 'l' if s < 0 else 'r'
-        add(f"tt_motor_{tag}", body, "tt_yellow", "robot", "TT gear motor 1:48 3-6 V")
-        add(f"tt_shaft_{tag}", shaft, "metal", "robot", "poros motor")
+        gear, can, shaft = tt_motor(s)
+        add(f"tt_gearbox_{tag}", gear, "tt_yellow", "robot", "TT gear motor 1:48 — gearbox", source=SRC_ADA)
+        add(f"tt_can_{tag}", can, "metal", "robot", "TT gear motor — kaleng motor DC", source=SRC_ADA)
+        add(f"tt_shaft_{tag}", shaft, "metal", "robot", "TT gear motor — poros ganda", source=SRC_ADA)
         tire, rim = wheel(s)
         add(f"wheel_tire_{tag}", tire, "tire", "robot", "roda TT 65 mm karet")
         add(f"wheel_rim_{tag}", rim, "rim", "robot", "velg roda TT")
-    pcb, mod, usb, hdr = esp32_devkit(-12.0, 16.0, BASE_TOP + 8.5 + 2.5)
-    add("esp32_pcb", pcb, "black", "robot", "ESP32 DevKit V1 30 pin (BT classic untuk stik PS)")
-    add("esp32_module", mod, "metal", "robot", "modul WROOM-32")
+    pcb, mod, usb, hdr = esp32_devkit(-1.0, 15.0, BASE_TOP + 8.5 + 2.5)
+    add("esp32_pcb", pcb, "black", "robot", "PCB ESP32 DevKit V1 30 pin 51,5x28,3 (dimodelkan)")
+    add("esp32_module", mod, "shield", "robot", "modul ESP32-WROOM-32E", source=SRC_ESP, mesh_dev=0.15)
     add("esp32_usb", usb, "metal", "robot", "micro-USB")
-    add("esp32_headers", hdr, "ink", "robot", "pin header")
-    dpcb, dchip = drv8833(26.0, 26.0, BASE_TOP + 1.0)
-    add("drv8833_pcb", dpcb, "pcb_blue", "robot", "driver motor DRV8833 2 ch 1,5 A")
+    add("esp32_headers", hdr, "ink", "robot", "pin header 2x15")
+    dpcb, dchip = drv8833(23.0, 2.5, BASE_TOP + 1.0)
+    add("drv8833_pcb", dpcb, "pcb_blue", "robot", "modul DRV8833 2 ch 1,5 A (dimodelkan)")
     add("drv8833_chip", dchip, "black", "robot", "IC DRV8833")
-    hb, cells = aa_holder(0.0, -44.0, BASE_TOP + 0.5)
-    add("aa_holder", hb, "black", "robot", "holder 4xAA 2x2 (6 V)")
-    add("aa_cells", cells, "metal", "robot", "4 baterai AA")
-    sv = (SERVO_XY[0], SERVO_XY[1], BASE_TOP + 22.7 + 4.0 - 10.0)
-    body, shaft, horn = sg90(*sv)
-    add("sg90_body", body, "servo_blue", "robot", "servo SG90 kicker (poros vertikal)")
-    add("sg90_shaft", shaft, "white", "robot", "poros servo")
-    add("sg90_horn", horn, "white", "robot", "horn servo")
-    add("robot_kicker", kicker(sv), "red", "robot", "cetak PLA, pemukul bola di horn servo", printed=True)
-    swb, swk = slide_switch(-35.0, BASE_REAR + 2.0, BASE_TOP + 1.0)
-    add("switch_body", swb, "black", "robot", "saklar geser power")
-    add("switch_knob", swk, "white", "robot", "knob saklar")
+    hb, hin = aa_holder(0.0, -48.0, BASE_TOP + 0.5)
+    add("aa_holder", hb, "black", "robot", "holder 4xAA 2x2 + saklar", source=SRC_ADA)
+    add("aa_holder_inner", hin, "ink", "robot", "holder 4xAA — bagian dalam/tutup", source=SRC_ADA)
+    body, horn = sg90(SERVO_XY[0], SERVO_XY[1], SERVO_BOT)
+    add("sg90_body", body, "servo_blue", "robot", "servo SG90 kicker (poros vertikal)", source=SRC_FC)
+    add("sg90_horn", horn, "white", "robot", "horn servo 1 lengan", source=SRC_FC)
+    horn_top = horn.BoundBox.ZMax
+    add("robot_kicker", kicker(horn_top), "red", "robot", "cetak PLA, pemukul bola disekrup ke horn", printed=True, source="desain KodingYuk")
+    add("switch_body", slide_switch(-39.0, BASE_REAR + 6.0, BASE_TOP), "black", "robot", "saklar geser power (cadangan; holder 830 sudah ada saklar)", source=SRC_ADA)
     add("ball", ball(), "white", "ball", "bola plastik berlubang (floorball) 72 mm")
-    add("caster_ball", Part.makeSphere(6.35, V(0.0, BASE_REAR + 14.0, 6.35)), "metal", "robot", "bola baja 1/2 inch (gotri) di cup cetak")
+    add("caster_ball", Part.makeSphere(6.35, V(0.0, BASE_REAR + 10.0, 6.35)), "metal", "robot", "bola baja 1/2 inch (gotri) di cup cetak")
 
 
 def build_pad():
     top, bottom = pad_shells()
-    add("pad_shell_top", top, "yellow", "pad", "cetak PLA, cangkang atas KodyPad", printed=True)
-    add("pad_shell_bottom", bottom, "navy", "pad", "cetak PLA, cangkang bawah KodyPad", printed=True)
-    cols = {"pad_joy_pcb": "pcb", "pad_joy_body": "black", "pad_joy_cap": "ink", "pad_btn_kick": "red", "pad_btn_turbo": "teal",
-            "pad_btn_horn": "sun", "pad_main_pcb": "pcb", "pad_c3": "black", "pad_aaa": "black", "pad_led": "glass", "pad_switch": "black"}
-    notes = {"pad_joy_pcb": "joystick KY-023", "pad_btn_kick": "tombol TENDANG (tactile 12 mm + cap)", "pad_btn_turbo": "tombol TURBO",
-             "pad_btn_horn": "tombol KLAKSON/buzzer", "pad_main_pcb": "PCB lubang 13x3,5 cm (perfboard)", "pad_c3": "ESP32-C3 Super Mini (ESP-NOW)",
-             "pad_aaa": "holder 3xAAA 4,5 V", "pad_led": "LED status 3 mm", "pad_switch": "saklar geser"}
-    for k, s in pad_internals().items():
-        add(k, s, cols[k], "pad", notes.get(k, ""))
+    add("pad_shell_top", top, "yellow", "pad", "cetak PLA, cangkang atas KodyPad", printed=True, source="desain KodingYuk")
+    add("pad_shell_bottom", bottom, "navy", "pad", "cetak PLA, cangkang bawah KodyPad", printed=True, source="desain KodingYuk")
+    for k, (s, col, note, src) in pad_internals().items():
+        add(k, s, col, "pad", note, printed=k.startswith("pad_cap") or k == "pad_joy_cap",
+            source=src or ("desain KodingYuk" if "cetak" in note else "dimodelkan dari datasheet"))
 
 
 def build_arena():
@@ -423,7 +471,7 @@ def build_arena():
         kind = k.split("_")[1]
         note = {"floor": "triplek 9 mm 122x244 utuh, cat hijau", "wall": "strip triplek 12 cm", "goal": "gawang 40 cm lebar x 12 cm dalam",
                 "corner": "pojok 45 derajat segitiga 10 cm", "line": "lakban putih 2 cm", "spots": "titik netral"}.get(kind, "")
-        add(k, s, col.get(kind, "wood"), "arena", note, mesh_dev=0.5)
+        add(k, s, col.get(kind, "wood"), "arena", note, mesh_dev=0.5, source="desain KodingYuk")
 
 
 def export_step(group, fname):
@@ -447,6 +495,9 @@ def main():
     print("PARTS", len(PARTS_META), "printed cm3:", round(sum(p["volume_cm3"] for p in printed), 1))
     for p in printed:
         print(f"  {p['name']:24s} {p['volume_cm3']:7.2f} cm3  bbox {p['bbox']}")
+    for p in PARTS_META:
+        if p["group"] in ("robot", "pad") and not p["printed"]:
+            print(f"  [{p['source'][:22]:22s}] {p['name']:22s} bbox {p['bbox']}")
     print("DONE")
 
 
