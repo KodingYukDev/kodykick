@@ -35,6 +35,7 @@ cd "../../Shared Libraries/kodingyuk-social-kit" && cp ../../Robotics/KodyKick/o
 7 part robot (121 cm³, ±150 g PLA) + 2 part pad (58 cm³). Tray & shell dicetak terbalik tidak perlu (dasar datar); shell dicetak tegak dengan support di bawah lengan scoop. Dinding 2 mm, snap pilar Ø6 ke shell. Lihat `out/parts.json` → `printed: true`.
 
 ## Belum / keputusan Owner
+- Gambar produk di Odoo belum terpasang: upload attachment gagal (`Oh snap! odoo-files/...`, filestore prod menolak tulis) — cek filestore/S3 server Odoo.
 - Harga jual & tanggal pre-order (placeholder `[...]` di video/caption).
 - VO ElevenLabs (key MCP invalid 9 Nov 2026) — naskah siap di `docs/NASKAH-VIDEO.md`.
 - Prototipe fisik belum dicetak; toleransi slot motor/servo perlu uji 1 cetakan.
