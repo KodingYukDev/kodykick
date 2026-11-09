@@ -39,7 +39,7 @@ def allowed(a, b):
 
 bad = 0
 for group in ("robot", "pad"):
-    parts = K.SHAPES[group]
+    parts = K.SHAPES.get(group, [])
     for (na, sa), (nb, sb) in itertools.combinations(parts, 2):
         if allowed(na, nb):
             continue

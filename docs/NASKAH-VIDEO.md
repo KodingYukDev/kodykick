@@ -1,15 +1,15 @@
 # Naskah video & feed KodyKick
 
 ## Reel 20 s "KodyKick — Robot Bola, Kamu Pelatihnya" (9:16, social kit, tema `produk` aksen kuning)
-Dirender dari `Shared Libraries/kodingyuk-social-kit` komposisi `KodyKickAd` (`src/ads/KodyKickAd.tsx`), footage Blender dari `Robotics/KodyKick/out/renders/`.
+Dirender dari `Shared Libraries/kodingyuk-social-kit` komposisi `KodyKick-Ad` (`src/ads/KodyKickAd.tsx`), footage Blender realistis (Cycles) dari `Robotics/KodyKick/out/real/`: hero/inside/arena.png, breakdown.mp4 (exploded view 5 s), match.mp4 (gol, 4,8 s). Video panjang: `breakdown.mp4` & `match.mp4` juga dipakai utuh untuk feed/YouTube Shorts.
 
 | Detik | Visual | Teks di layar | VO (ElevenLabs, suara "Kak Ceria", ceria & cepat) |
 |---|---|---|---|
 | 0–2,4 | arena.png push-in, hook sticker | **Robot bola buat anak?** | "Robot bola… yang kamu rakit sendiri?" |
 | 2,4–6,4 | spin.mp4 (robot berputar) | *KodyKick* · robot soccer | "Kenalin, KodyKick! Robot soccer dari KodingYuk." |
 | 6,4–10 | match.mp4 (serbu bola, tendang, gol) | Tendang pakai *servo* ⚽ | "Giring bolanya, pencet tombol merah… GOL!" |
-| 10–13 | pad.png | Remote *KodyPad*, kamu rakit sendiri | "Remote-nya juga kamu rakit sendiri: joystick, tombol, dan otak ESP32." |
-| 13–16 | kit.png flat lay + chip: ESP32 · 2 motor · servo · 4×AA | Baterai AA biasa, aman | "Pakai baterai AA biasa. Aman, gampang." |
+| 10–14,4 | breakdown.mp4 (exploded view realistis, komponen asli) | Kamu *rakit sendiri* · remote: stik PS 🎮 | "Kamu rakit sendiri: motor, servo, ESP32… dan remotenya pakai stik PS!" |
+| 14,4–16,4 | inside.png (isi robot, komponen asli) + chip | Komponen *asli*, baterai AA biasa | "Komponen asli yang gampang dicari, baterai AA biasa." |
 | 16–17 | arena.png (gawang) | Arena dari *1 lembar triplek* | "Arenanya? Dua lembar triplek, jadi lapangan bola!" |
 | 17–21 | End card: KodyKick by KodingYuk · "Robot bola, kamu pelatihnya" · CTA | **Daftar pre-order** · kodingyuk.id/produk/kodykick | "Ayo jadi pelatih robot pertama di sekolahmu!" |
 

@@ -33,12 +33,12 @@
    "printed": true,
    "qty": 1,
    "source": "desain KodingYuk",
-   "volume_cm3": 68.19,
+   "volume_cm3": 75.79,
    "bbox": [
-    -57.0,
+    -60.0,
     -86.0,
     6.0,
-    57.0,
+    60.0,
     80.0,
     35.3
    ]
@@ -51,12 +51,12 @@
    "printed": true,
    "qty": 1,
    "source": "desain KodingYuk",
-   "volume_cm3": 65.75,
+   "volume_cm3": 81.36,
    "bbox": [
-    -57.0,
+    -60.0,
     -86.0,
     28.3,
-    57.0,
+    60.0,
     80.0,
     72.0
    ]
@@ -197,10 +197,10 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    -85.0,
+    -88.0,
     -32.47,
     0.03,
-    -59.0,
+    -62.0,
     32.47,
     64.97
    ]
@@ -215,10 +215,10 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    -85.0,
+    -88.0,
     -26.46,
     6.0,
-    -59.0,
+    -62.0,
     26.46,
     59.0
    ]
@@ -287,10 +287,10 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    59.0,
+    62.0,
     -32.47,
     0.03,
-    85.0,
+    88.0,
     32.47,
     64.97
    ]
@@ -305,10 +305,10 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    59.0,
+    62.0,
     -26.46,
     6.0,
-    85.0,
+    88.0,
     26.46,
     59.0
    ]
@@ -395,11 +395,11 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    14.0,
-    -7.5,
+    -10.0,
+    5.0,
     22.3,
-    32.0,
-    12.5,
+    8.0,
+    25.0,
     23.9
    ]
   },
@@ -413,11 +413,11 @@
    "source": "dimodelkan dari datasheet",
    "volume_cm3": null,
    "bbox": [
-    20.5,
-    -0.75,
+    -3.5,
+    11.75,
     23.9,
-    25.5,
-    5.75,
+    1.5,
+    18.25,
     24.9
    ]
   },
@@ -563,294 +563,6 @@
     6.33,
     -69.68,
     12.7
-   ]
-  },
-  {
-   "name": "pad_shell_top",
-   "color": "yellow",
-   "group": "pad",
-   "note": "cetak PLA, cangkang atas KodyPad",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 29.89,
-   "bbox": [
-    -75.0,
-    -48.0,
-    9.0,
-    75.0,
-    37.0,
-    26.0
-   ]
-  },
-  {
-   "name": "pad_shell_bottom",
-   "color": "navy",
-   "group": "pad",
-   "note": "cetak PLA, cangkang bawah KodyPad",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 28.15,
-   "bbox": [
-    -75.0,
-    -48.0,
-    -0.0,
-    75.0,
-    37.0,
-    9.0
-   ]
-  },
-  {
-   "name": "pad_joy_pcb",
-   "color": "pcb",
-   "group": "pad",
-   "note": "PCB modul KY-023 (dimodelkan)",
-   "printed": false,
-   "qty": 1,
-   "source": "dimodelkan dari datasheet",
-   "volume_cm3": null,
-   "bbox": [
-    -58.0,
-    -13.0,
-    7.0,
-    -32.0,
-    21.0,
-    8.6
-   ]
-  },
-  {
-   "name": "pad_joy_body",
-   "color": "black",
-   "group": "pad",
-   "note": "joystick analog 2 sumbu + tombol (KY-023)",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    -56.05,
-    -7.05,
-    8.6,
-    -35.05,
-    18.17,
-    28.0
-   ]
-  },
-  {
-   "name": "pad_joy_cap",
-   "color": "ink",
-   "group": "pad",
-   "note": "cap joystick (cetak PLA)",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 2.65,
-   "bbox": [
-    -55.0,
-    -5.97,
-    18.0,
-    -35.0,
-    13.97,
-    30.0
-   ]
-  },
-  {
-   "name": "pad_tact_kick",
-   "color": "black",
-   "group": "pad",
-   "note": "tactile 12x12 mm B3F",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    38.54,
-    4.0,
-    5.64,
-    51.46,
-    16.0,
-    14.6
-   ]
-  },
-  {
-   "name": "pad_cap_kick",
-   "color": "red",
-   "group": "pad",
-   "note": "cap tombol (cetak PLA)",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 3.54,
-   "bbox": [
-    36.0,
-    1.03,
-    14.1,
-    54.0,
-    18.97,
-    28.0
-   ]
-  },
-  {
-   "name": "pad_tact_turbo",
-   "color": "black",
-   "group": "pad",
-   "note": "tactile 12x12 mm B3F",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    18.54,
-    -8.0,
-    5.64,
-    31.46,
-    4.0,
-    14.6
-   ]
-  },
-  {
-   "name": "pad_cap_turbo",
-   "color": "teal",
-   "group": "pad",
-   "note": "cap tombol (cetak PLA)",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 1.57,
-   "bbox": [
-    19.0,
-    -7.98,
-    14.1,
-    31.0,
-    3.98,
-    28.0
-   ]
-  },
-  {
-   "name": "pad_tact_horn",
-   "color": "black",
-   "group": "pad",
-   "note": "tactile 12x12 mm B3F",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    58.54,
-    -8.0,
-    5.64,
-    71.46,
-    4.0,
-    14.6
-   ]
-  },
-  {
-   "name": "pad_cap_horn",
-   "color": "sun",
-   "group": "pad",
-   "note": "cap tombol (cetak PLA)",
-   "printed": true,
-   "qty": 1,
-   "source": "desain KodingYuk",
-   "volume_cm3": 1.57,
-   "bbox": [
-    59.0,
-    -7.98,
-    14.1,
-    71.0,
-    3.98,
-    28.0
-   ]
-  },
-  {
-   "name": "pad_main_pcb",
-   "color": "pcb",
-   "group": "pad",
-   "note": "perfboard tombol kanan",
-   "printed": false,
-   "qty": 1,
-   "source": "dimodelkan dari datasheet",
-   "volume_cm3": null,
-   "bbox": [
-    21.0,
-    -11.0,
-    7.0,
-    69.0,
-    19.0,
-    8.6
-   ]
-  },
-  {
-   "name": "pad_aaa",
-   "color": "black",
-   "group": "pad",
-   "note": "holder 3xAAA + JST",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    -18.5,
-    -33.0,
-    2.5,
-    18.5,
-    33.0,
-    19.8
-   ]
-  },
-  {
-   "name": "pad_c3",
-   "color": "black",
-   "group": "pad",
-   "note": "ESP32-C3 Super Mini (dimodelkan)",
-   "printed": false,
-   "qty": 1,
-   "source": "dimodelkan dari datasheet",
-   "volume_cm3": null,
-   "bbox": [
-    -9.0,
-    -36.5,
-    20.0,
-    9.0,
-    -12.75,
-    23.8
-   ]
-  },
-  {
-   "name": "pad_led",
-   "color": "glass",
-   "group": "pad",
-   "note": "LED 3 mm",
-   "printed": false,
-   "qty": 1,
-   "source": "dimodelkan dari datasheet",
-   "volume_cm3": null,
-   "bbox": [
-    -1.6,
-    28.4,
-    20.0,
-    1.6,
-    31.6,
-    26.0
-   ]
-  },
-  {
-   "name": "pad_switch",
-   "color": "black",
-   "group": "pad",
-   "note": "saklar geser SPDT",
-   "printed": false,
-   "qty": 1,
-   "source": "Adafruit_CAD_Parts (MIT)",
-   "volume_cm3": null,
-   "bbox": [
-    -45.85,
-    24.0,
-    17.5,
-    -34.15,
-    28.0,
-    25.5
    ]
   },
   {
@@ -1252,21 +964,16 @@
  ],
  "params": {
   "wheel_d": 65.0,
-  "wheel_x": 72.0,
+  "wheel_x": 75.0,
   "axle_z": 32.5,
   "base": [
-   114.0,
+   120.0,
    -86.0,
    80.0
   ],
   "shell_top": 72.0,
   "ball_d": 72.0,
   "scoop_cy": 92.0,
-  "pad": [
-   150.0,
-   74.0,
-   26.0
-  ],
   "arena": [
    2440.0,
    1220.0,

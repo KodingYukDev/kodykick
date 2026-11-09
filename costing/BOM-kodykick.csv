@@ -10,28 +10,18 @@ No;Bagian;Komponen;Spesifikasi;Qty;Harga satuan eceran (IDR);Subtotal @1;Subtota
 9;Robot;LED 5 mm putih x2 + resistor 220R;mata robot;1;1000;1000;850;[ESTIMASI];
 10;Robot;Buzzer pasif KY-006;klakson;1;5000;5000;4250;Tokopedia KY-006 Rp3.000-9.000, Okt 2026 (BOM Michi);
 11;Robot;Kabel Dupont F-F 10 cm;20 pcs;20;375;7500;6375;[ESTIMASI] set 40 pcs Rp15.000;
-12;Robot;Sekrup M3x8 x4 + M2x6 x4;ESP32 standoff + servo;1;2000;2000;1700;[ESTIMASI];
+12;Robot;Sekrup: M3x16 self-tapping x4 (cangkang), M2x8 x2 (telinga servo), M2x6 x1 (kicker ke horn);;1;3000;3000;2550;[ESTIMASI];motor & modul ditahan cradle/rel/klip cetak + rusuk cangkang, tanpa sekrup; holder baterai double tape/velcro
 13;Robot;Cetak 3D PLA robot;tray + shell + kicker + sirip + kartu + 2 lensa = 141 cm3 (~175 g + 10% support);1;50000;50000;50000;hitung in-house: filamen Rp150/g x 165 g = 24.750 + listrik/depresiasi 8.000 + pasca-proses 10.000 + gagal cetak 8%;jasa print luar ~Rp600-1.000/g = Rp100.000-165.000
 14;Robot;Bola floorball 72 mm;plastik berlubang, ringan;1;8000;8000;6800;[ESTIMASI] Rp5.000-15.000;
 15;Robot;Kartu nomor + stiker tim;cetak kertas laminasi;1;3000;3000;2550;[ESTIMASI];
-;Robot;SUBTOTAL ROBOT;;;;225900;199515;;
-21;KodyPad;ESP32-C3 Super Mini;USB-C, WiFi/BLE (ESP-NOW);1;34000;34000;28900;Tokopedia esp32-c3-super-mini Rp34.000 (BOM Michi, Sep 2026);
-22;KodyPad;Joystick KY-023;2 sumbu + tombol;1;7000;7000;5950;[ESTIMASI] Rp5.000-9.000;
-23;KodyPad;Tactile 12x12 x3 + cap warna;TENDANG / TURBO / KLAKSON;3;1000;3000;2550;[ESTIMASI];
-24;KodyPad;Holder 3xAAA;4,5 V, kabel;1;5000;5000;4250;[ESTIMASI] Rp4.000-7.000;
-25;KodyPad;Saklar geser SPDT;;1;2000;2000;1700;[ESTIMASI];
-26;KodyPad;LED 3 mm + resistor;status pairing;1;500;500;425;[ESTIMASI];
-27;KodyPad;Perfboard 5x7 cm;2 pcs (joystick kiri, tombol kanan);2;3000;6000;5100;[ESTIMASI];
-28;KodyPad;Kabel + pin header;;1;5000;5000;4250;[ESTIMASI];
-29;KodyPad;Cetak 3D PLA pad;atas + bawah = 58 cm3 (~72 g + support);1;22000;22000;22000;in-house seperti baris 13;
-;KodyPad;SUBTOTAL KODYPAD;;;;84500;75125;;
-;Alternatif;Stik PS3 wireless OP (ganti KodyPad);Bluetooth classic, bisa Bluepad32;1;65000;65000;55250;Tokopedia find/stik-ps3-bluetooth Rp59.900-75.000, Nov 2026;harus pairing USB SixaxisPairTool; clone kadang gagal auth
+;Robot;SUBTOTAL ROBOT;;;;226900;200365;;
+21;Remote;Stik PS3 wireless OP (Bluetooth classic);dipakai lewat Bluepad32 di ESP32; pairing USB SixaxisPairTool sekali;1;65000;65000;55250;Tokopedia find/stik-ps3-bluetooth Rp59.900-75.000, Nov 2026;KEPUTUSAN Owner 9 Nov 2026: pakai stik PS, KodyPad DIY dibatalkan. Alternatif stik PS4 DualShock bekas Rp150-250rb (tanpa SixaxisPairTool)
 31;Kit;Kemasan kardus + insert;25x20x12 cm, cetak 1 warna;1;15000;15000;9000;[ESTIMASI];
 32;Kit;Buku panduan A5 12 hal;full colour;1;8000;8000;5000;[ESTIMASI];
-;Kit;TOTAL BOM KIT (robot + pad + bola + kemasan + buku);;;;333400;288640;;
-;Kit;Upah rakit + QC (45 menit);;;;45000;40000;[ESTIMASI] Rp60.000/jam;
-;Kit;Susut/yield 5%;;;;16670;14432;;
-;Kit;HPP KIT;;;;395070;343072;;
+;Kit;TOTAL BOM KIT (robot + stik PS3 + bola + kemasan + buku);;;;314900;269315;;
+;Kit;Upah rakit + QC (30 menit; tanpa solder remote);;;;30000;27000;[ESTIMASI] Rp60.000/jam;
+;Kit;Susut/yield 5%;;;;15745;13466;;
+;Kit;HPP KIT;;;;360645;309781;;
 41;Arena;Triplek 9 mm 122x244;lantai utuh + 1 lembar dinding/gawang;2;130000;260000;234000;Indotrading Mar 2026 Rp129.250 (ex-PPN, grosir) / harga.web.id Rp96.800-200.000;
 42;Arena;Cat hijau tembok/duco 1 kg + kuas;lantai;1;45000;45000;40500;[ESTIMASI];
 43;Arena;Lakban putih 2 cm;garis lapangan;1;15000;15000;13500;[ESTIMASI];

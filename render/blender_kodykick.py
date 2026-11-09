@@ -56,7 +56,8 @@ LOOK = {  # nama warna -> (rough, metal, emit, alpha, coat)
     "yellow": (0.35, 0, 0, 1, 0.3), "navy": (0.4, 0, 0, 1, 0.2), "red": (0.35, 0, 0, 1, 0.3), "paper": (0.6, 0, 0, 1, 0),
     "metal": (0.3, 1.0, 0, 1, 0), "tire": (0.9, 0, 0, 1, 0), "rim": (0.4, 0, 0, 1, 0), "glass": (0.1, 0, 6.0, 1, 0),
     "line": (0.7, 0, 0.3, 1, 0), "green": (0.85, 0, 0, 1, 0), "wood": (0.7, 0, 0, 1, 0), "white": (0.5, 0, 0, 1, 0.2),
-    "teal": (0.35, 0, 0, 1, 0.3), "sun": (0.35, 0, 0, 1, 0.3), "tt_yellow": (0.5, 0, 0, 1, 0),
+    "teal": (0.35, 0, 0, 1, 0.3), "sun": (0.35, 0, 0, 1, 0.3), "tt_yellow": (0.5, 0, 0, 1, 0), "shield": (0.35, 0.9, 0, 1, 0),
+    "servo_blue": (0.5, 0, 0, 1, 0), "black": (0.6, 0, 0, 1, 0), "ink": (0.6, 0, 0, 1, 0),
 }
 
 
@@ -248,6 +249,32 @@ def shot_kit(a):
     pad("Pad", (0.11, -0.10, 0), (0, 0, math.radians(8)))
     ball("B", (0.13, 0.10, P["ball_d"] / 2 * MM))
     camera((0.03, -0.05, 0.92), (0.03, 0.0, 0.0), 32)
+    setup_render(a, 1440, 1800)
+
+
+HIDE_SHELL = ("robot_top_shell", "robot_fin", "robot_number_card", "robot_eye_l", "robot_eye_r")
+
+
+def shot_inside(a):
+    """Isi robot: tray + komponen asli tanpa cangkang (3/4 dari atas)."""
+    clear()
+    ground(3.0)
+    lights()
+    e = empty("R", (0, 0, 0), (0, 0, math.radians(35)))
+    import_group("robot", "R_", parent=e, exclude=HIDE_SHELL)
+    import_group("ball", "R_", parent=e)
+    camera((0.26, -0.30, 0.30), (0.0, -0.01, 0.03), 32)
+    setup_render(a, 1440, 1800)
+
+
+def shot_padinside(a):
+    """Isi KodyPad tanpa cangkang atas."""
+    clear()
+    ground(3.0, "navy")
+    lights(1.1, warm=False)
+    e = empty("Pad", (0, 0, 0), (0, 0, math.radians(10)))
+    import_group("pad", "Pad_", parent=e, exclude=("pad_shell_top",))
+    camera((0.10, -0.22, 0.24), (0.0, -0.01, 0.01), 30)
     setup_render(a, 1440, 1800)
 
 

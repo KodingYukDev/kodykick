@@ -10,7 +10,7 @@
 #include <WiFi.h>
 #include <esp_now.h>
 
-// #define USE_BLUEPAD32
+#define USE_BLUEPAD32   // default: stik PS3/PS4 (keputusan Owner 9 Nov 2026). ESP-NOW tetap ada untuk pad lama.
 #ifdef USE_BLUEPAD32
 #include <Bluepad32.h>
 #endif

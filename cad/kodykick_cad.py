@@ -37,7 +37,7 @@ AXLE_Z = WHEEL_D / 2                   # 32.5
 MOTOR_LEN_BACK, MOTOR_LEN_FRONT = 54.6, 16.0   # dari STEP Adafruit 3777: badan -54.6..+16 relatif poros
 MOTOR_T_IN, MOTOR_T_OUT = 9.3, 11.3    # tebal sepanjang poros: 9.3 ke dalam, 11.3 ke luar (asimetris)
 MOTOR_H = 22.4                         # tinggi gearbox
-BASE_W, BASE_FRONT, BASE_REAR = 114.0, 80.0, -86.0
+BASE_W, BASE_FRONT, BASE_REAR = 120.0, 80.0, -86.0
 BASE_T = 3.0
 BASE_TOP = AXLE_Z - MOTOR_H / 2        # 21.3 -> motor duduk di atas pelat, poros tepat di tengah
 BASE_BOT = BASE_TOP - BASE_T           # 18.3 ground clearance
@@ -46,10 +46,16 @@ SHELL_TOP = 72.0
 BALL_D = 72.0                          # bola plastik berlubang (floorball) 72 mm
 SCOOP_R = BALL_D / 2 + 4
 SCOOP_CY = 92.0
-WHEEL_X = BASE_W / 2 + 2 + WHEEL_W / 2   # 72 -> lebar total 170 mm
+WHEEL_X = BASE_W / 2 + 2 + WHEEL_W / 2   # 75 -> lebar total 176 mm
 SERVO_XY = (-22.0, 50.0)               # poros servo kicker (vertikal), kiri-depan
 SERVO_BOT = 11.3                       # dasar badan servo (menggantung lewat slot lantai)
-MOTOR_X = BASE_W / 2 - WALL - 1.0 - MOTOR_T_OUT   # 42.7 -> pusat poros motor (muka luar 1 mm dari dinding)
+MOTOR_GAP = 4.0                        # celah motor ke dinding (rusuk penekan cangkang)
+MOTOR_X = BASE_W / 2 - WALL - MOTOR_GAP - MOTOR_T_OUT   # 42.7 -> pusat poros motor
+ESP_Z = BASE_TOP + 8.5 + 2.5           # dasar PCB ESP32 (di atas header 8,5 + rel)
+ESP_XY = (-1.0, 15.0)                  # pusat PCB ESP32 DevKit V1
+DRV_XY = (-1.0, 15.0)                  # modul DRV8833 di bawah PCB ESP32, di antara dua baris header
+HOLDER_Y = -48.0
+SHELL_SCREWS = ((-52.0, -80.0), (52.0, -80.0), (-52.0, 44.0), (52.0, 44.0))
 PARTS_META = []
 SHAPES = {}
 _STEP = {}
@@ -240,19 +246,44 @@ def base_tray():
             xa, xb = sorted((s * (BASE_W / 2 - WALL), s * xin))        # klem depan gearbox & belakang kaleng
             tray = tray.fuse(Part.makeBox(xb - xa, 2.0, 14.0, V(xa, yy, BASE_TOP)))
         rx = min(s * x_in_motor, s * (x_in_motor - 2.0))
-        for yy in (-11.0,):                               # tiang pendek sisi dalam motor (depan gearbox)
+        for yy in (-11.0,):                               # tiang pendek sisi dalam motor
             tray = tray.fuse(Part.makeBox(2.0, 3.0, 12.0, V(rx, yy, BASE_TOP)))
     cup_x, cup_y = 0.0, BASE_REAR + 10.0                  # caster di belakang holder baterai
     cup = cyl(9.5, BASE_TOP - 6.0, cup_x, cup_y, 6.0)
     cup = cup.cut(Part.makeSphere(6.6, V(cup_x, cup_y, 6.6)))
     cup = cup.cut(cyl(5.0, 8.0, cup_x, cup_y, 0.0))
     tray = tray.fuse(cup)
-    for sx, sy in ((-50, -80), (50, -80), (-50, 44), (50, 44)):   # pilar snap shell
-        tray = tray.fuse(cyl(3.0, 10.0, sx, sy, BASE_TOP))
-    for sx, sy in ((-1 - 11.4, 15 + 24), (-1 + 11.4, 15 + 24), (-1 - 11.4, 15 - 24), (-1 + 11.4, 15 - 24)):
-        tray = tray.fuse(cyl(2.6, 4.0, sx, sy, BASE_TOP).cut(cyl(1.2, 4.0, sx, sy, BASE_TOP)))
-    # slot servo (badan SG90 asli: x +-5.9, y -16.6..+6.1 relatif poros)
+    # pilar sekrup cangkang: M3x16 self-tapping dari bawah tray ke boss cangkang (4 titik)
+    for sx, sy in SHELL_SCREWS:
+        tray = tray.fuse(cyl(3.5, 10.0, sx, sy, BASE_TOP))
+        tray = tray.cut(cyl(1.7, 20.0, sx, sy, BASE_BOT - 1.0))
+        tray = tray.cut(cyl(3.2, 2.0, sx, sy, BASE_BOT - 0.5))           # countersink dangkal kepala sekrup
+    # rel penjepit PCB ESP32 DevKit V1 (lebar 28.3, tebal 1.6): rel berlip di kedua sisi, PCB diselipkan dari atas
+    ex, ey, ez = ESP_XY[0], ESP_XY[1], ESP_Z
+    for sx in (-1, 1):
+        xr = ex + sx * (14.15 + 0.3)
+        rail = Part.makeBox(2.0, 40.0, ez + 1.6 + 1.2 - BASE_TOP, V(min(xr, xr + sx * 2.0), ey - 20.0, BASE_TOP))
+        lip = Part.makeBox(1.2, 40.0, 1.2, V(min(xr, xr - sx * 1.2), ey - 20.0, ez + 1.6 + 0.2))
+        tray = tray.fuse(rail).fuse(lip)
+    for sy in (ey - 25.75 - 2.0, ey + 25.75):                             # stopper ujung PCB
+        tray = tray.fuse(Part.makeBox(28.3 + 4.6, 2.0, ez + 1.6 - BASE_TOP, V(ex - 14.15 - 2.3, sy, BASE_TOP)))
+    # klip modul DRV8833 (18 x 20): 4 sudut L
+    dx, dy, dz = DRV_XY[0], DRV_XY[1], BASE_TOP + 1.0
+    for sy in (-1, 1):                                                   # 2 klip ujung (depan/belakang) + lip
+        cy = dy + sy * 10.3
+        tray = tray.fuse(Part.makeBox(12.0, 1.5, dz + 1.6 + 1.2 - BASE_TOP, V(dx - 6.0, min(cy, cy + sy * 1.5), BASE_TOP)))
+        tray = tray.fuse(Part.makeBox(12.0, 1.2, 1.0, V(dx - 6.0, min(cy, cy - sy * 1.2), dz + 1.6 + 0.2)))
+    # slot servo + 2 boss sekrup M2x8 di telinga (lubang telinga SG90 asli: y -19.0 dan +8.3 relatif poros, z 27.2)
     tray = tray.cut(Part.makeBox(12.8, 23.7, 10.0, V(SERVO_XY[0] - 6.4, SERVO_XY[1] - 17.1, BASE_BOT)))
+    for dy_ in (-19.0, 8.3):
+        bx, by = SERVO_XY[0], SERVO_XY[1] + dy_
+        tray = tray.fuse(cyl(2.6, SERVO_BOT + 15.9 - BASE_TOP, bx, by, BASE_TOP).cut(cyl(0.8, 8.0, bx, by, SERVO_BOT + 15.9 - 6.0)))
+    # penahan holder baterai 4xAA 2x2 (64.6 x 70): 4 nub sudut + ditempel double tape / velcro
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            cx, cy = sx * 32.6, HOLDER_Y + sy * 35.3
+            tray = tray.fuse(Part.makeBox(1.5, 8.0, 6.0, V(min(cx, cx + sx * 1.5), min(cy, cy - sy * 8.0), BASE_TOP)))
+            tray = tray.fuse(Part.makeBox(8.0, 1.5, 6.0, V(min(cx, cx - sx * 8.0), min(cy, cy + sy * 1.5), BASE_TOP)))
     for sx in (-20, 0, 20):
         for sy in (-50, 30):
             tray = tray.cut(cyl(5.0, 10.0, sx, sy, BASE_BOT))
@@ -282,6 +313,16 @@ def top_shell():
     for s in (-1, 1):
         shell = shell.cut(Part.makeBox(WALL + 3.0, 8.0, 8.0, V(s * BASE_W / 2 - (WALL + 3.0) / 2, -4.0, z0 - 0.1)))
     shell = shell.cut(Part.makeBox(56.0, 30.0, 26.0, V(-30.0, 40.0, 28.0)))     # jendela kicker
+    # boss sekrup M3 (self-tapping) turun dari langit-langit ke pilar tray (z 31.3)
+    for sx, sy in SHELL_SCREWS:
+        ceil = SHELL_TOP - WALL if sy < 30 else z0 + arm_h - WALL
+        shell = shell.fuse(cyl(4.5, ceil - 31.3 + 0.5, sx, sy, 31.3 - 0.5).cut(cyl(1.4, 12.0, sx, sy, 31.3 - 0.5)))
+    # rusuk penekan motor: 2 rusuk per motor dari langit-langit ke atas gearbox (z 44.0), lebar motor + celah
+    for s in (-1, 1):
+        xa = min(s * (MOTOR_X - MOTOR_T_IN - 1.0), s * (BASE_W / 2 - WALL))
+        xb = max(s * (MOTOR_X - MOTOR_T_IN - 1.0), s * (BASE_W / 2 - WALL))
+        for yy in (-30.0, 2.0):
+            shell = shell.fuse(Part.makeBox(xb - xa, 2.5, SHELL_TOP - WALL - 44.0 + 0.5, V(xa, yy, 44.0)))
     return shell.removeSplitter()
 
 
@@ -435,15 +476,15 @@ def build_robot():
         tire, rim = wheel(s)
         add(f"wheel_tire_{tag}", tire, "tire", "robot", "roda TT 65 mm karet")
         add(f"wheel_rim_{tag}", rim, "rim", "robot", "velg roda TT")
-    pcb, mod, usb, hdr = esp32_devkit(-1.0, 15.0, BASE_TOP + 8.5 + 2.5)
+    pcb, mod, usb, hdr = esp32_devkit(ESP_XY[0], ESP_XY[1], ESP_Z)
     add("esp32_pcb", pcb, "black", "robot", "PCB ESP32 DevKit V1 30 pin 51,5x28,3 (dimodelkan)")
     add("esp32_module", mod, "shield", "robot", "modul ESP32-WROOM-32E", source=SRC_ESP, mesh_dev=0.15)
     add("esp32_usb", usb, "metal", "robot", "micro-USB")
     add("esp32_headers", hdr, "ink", "robot", "pin header 2x15")
-    dpcb, dchip = drv8833(23.0, 2.5, BASE_TOP + 1.0)
+    dpcb, dchip = drv8833(DRV_XY[0], DRV_XY[1], BASE_TOP + 1.0)
     add("drv8833_pcb", dpcb, "pcb_blue", "robot", "modul DRV8833 2 ch 1,5 A (dimodelkan)")
     add("drv8833_chip", dchip, "black", "robot", "IC DRV8833")
-    hb, hin = aa_holder(0.0, -48.0, BASE_TOP + 0.5)
+    hb, hin = aa_holder(0.0, HOLDER_Y, BASE_TOP + 0.5)
     add("aa_holder", hb, "black", "robot", "holder 4xAA 2x2 + saklar", source=SRC_ADA)
     add("aa_holder_inner", hin, "ink", "robot", "holder 4xAA — bagian dalam/tutup", source=SRC_ADA)
     body, horn = sg90(SERVO_XY[0], SERVO_XY[1], SERVO_BOT)
@@ -481,14 +522,12 @@ def export_step(group, fname):
 
 def main():
     build_robot()
-    build_pad()
     build_arena()
     export_step("robot", "kodykick.step")
-    export_step("pad", "kodypad.step")
     export_step("arena", "kodyarena.step")
     meta = dict(colors=C, parts=PARTS_META,
                 params=dict(wheel_d=WHEEL_D, wheel_x=WHEEL_X, axle_z=AXLE_Z, base=[BASE_W, BASE_REAR, BASE_FRONT],
-                            shell_top=SHELL_TOP, ball_d=BALL_D, scoop_cy=SCOOP_CY, pad=[PAD_W, PAD_D, PAD_H],
+                            shell_top=SHELL_TOP, ball_d=BALL_D, scoop_cy=SCOOP_CY,
                             arena=[FLOOR_X, FLOOR_Y, WALL_H, GOAL_W, GOAL_D, PLY]))
     json.dump(meta, open(os.path.join(OUT, "parts.json"), "w"), indent=1)
     printed = [p for p in PARTS_META if p["printed"]]

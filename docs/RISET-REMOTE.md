@@ -19,7 +19,10 @@ Stik PS3 OP (Rp60–75 rb) **sedikit lebih murah** dari KodyPad DIY (Rp84,5 rb e
 | C. Stik BLE/Android (X3, Ipega) | Rp90–210 rb | tanpa USB pairing | profil HID beragam, BT 3.0 tidak ketemu, mahal |
 | D. HP Android via WiFi AP (web joystick) | Rp0 | gratis | HP anak dipakai, latensi WiFi 30–80 ms, tidak "mainan" |
 
-## Keputusan desain
+## Keputusan Owner (9 Nov 2026)
+**Pakai stik PS (opsi B).** KodyPad tidak dibuat. Firmware robot default `USE_BLUEPAD32`; manual memuat langkah SixaxisPairTool. Catatan desain lama di bawah dipertahankan sebagai arsip.
+
+## Keputusan desain (arsip, sebelum keputusan Owner)
 - Kit: **A** (KodyPad). Firmware robot punya `#define USE_BLUEPAD32` untuk **B** sebagai upgrade; manual memuat langkah SixaxisPairTool.
 - D dijadikan fallback gratis di firmware (AP `KodyKick-xx`, halaman web joystick) supaya kelas tetap jalan kalau pad rusak.
 - KodyPad: joystick kiri = gerak (arcade drive), tombol merah besar = TENDANG (servo), teal = TURBO (PWM 100 %), oranye = KLAKSON (buzzer). Tombol PAIR = tekan joystick.

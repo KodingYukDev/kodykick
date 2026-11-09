@@ -6,15 +6,14 @@ Disusun 9 Nov 2026. Sumber: `BOM-kodykick.csv` (delimiter `;`), harga Tokopedia 
 
 | Item | BOM @1 | HPP @1 | HPP @50 | Harga jual usulan | Margin @50 |
 |---|---:|---:|---:|---:|---:|
-| **KodyKick Kit** (1 robot + 1 KodyPad + bola + kemasan + buku) | 333.400 | 395.000 | 343.000 | **Rp549.000** | 38 % |
-| KodyKick Kit + stik PS3 OP (tanpa KodyPad) | 303.400 | 362.000 | 313.000 | Rp549.000 | 43 % |
+| **KodyKick Kit** (1 robot + 1 stik PS3 OP + bola + kemasan + buku) | 314.900 | 361.000 | 310.000 | **Rp549.000** | 44 % |
 | **KodyArena** flat-pack (2 lembar triplek, dicat, gawang, lakban) | 340.000 | 490.000 | 426.000 | **Rp799.000** | 47 % |
-| **Paket Kelas** (2 robot + 2 pad + 2 bola + arena) | — | 1.258.000 | 1.092.000 | **Rp1.999.000** | 45 % |
-| Paket Lomba Sekolah (4 robot + 4 pad + arena + 4 bola) | — | 2.026.000 | 1.758.000 | Rp2.999.000 | 41 % |
+| **Paket Kelas** (2 robot + 2 stik + 2 bola + arena) | — | 1.212.000 | 1.046.000 | **Rp1.999.000** | 48 % |
+| Paket Lomba Sekolah (4 robot + 4 stik + arena + 4 bola) | — | 1.934.000 | 1.666.000 | Rp2.999.000 | 44 % |
 
 Harga jual di bawah Rp600.000 supaya sejajar Michi (Rp599.000) dan di bawah kit robot soccer marketplace (kit ESP32 car lengkap Rp849.000, Cytron Soccer:bit ≈ Rp900.000+ belum termasuk micro:bit).
 
-## Robot (BOM Rp225.900)
+## Robot (BOM Rp226.900)
 
 Komponen termahal: ESP32 DevKit V1 Rp75.000 (35 %), cetak PLA Rp45.000 (21 %), motor+roda Rp33.000.
 
@@ -23,18 +22,8 @@ Komponen termahal: ESP32 DevKit V1 Rp75.000 (35 %), cetak PLA Rp45.000 (21 %), m
 - **Cetak 3D in-house Rp45.000** (165 g PLA). Kalau cetak di jasa luar jadi Rp100.000–165.000 → BOM robot naik ke ±Rp300.000; jangan.
 - Pengurangan biaya kalau perlu: hilangkan servo kicker + buzzer (−Rp20.000, scoop pasif tetap bisa dorong bola), beli motor+roda paket (−Rp6.000).
 
-## KodyPad vs stik PS3 — hasil riset remote
-
-| | KodyPad DIY (ESP-NOW) | Stik PS3 OP clone | Stik BLE Android (X3 dkk) |
-|---|---|---|---|
-| Harga | Rp84.500 (Rp75.000 @50) | Rp59.900–75.000 | Rp90.000–210.000 |
-| Pairing | otomatis (tekan PAIR di pad + robot, MAC tersimpan) | **wajib** SixaxisPairTool via USB, set MAC ESP32 ke stik; clone kadang gagal autentikasi | tergantung profil HID; BT 3.0 sering tidak terdeteksi |
-| Banyak robot di 1 arena | ya, 1 pad ↔ 1 robot by MAC, latensi ±5 ms | ya tapi tiap stik harus di-pair ulang ke robotnya | tidak andal |
-| Nilai edukasi | anak merakit remotenya sendiri (joystick, tombol, C3) → cocok jadi sesi kelas | tidak ada | tidak ada |
-| Durability anak | casing PLA 2 mm + grip | bagus | bagus |
-| Risiko | solder perfboard (butuh guru) | stok clone berubah-ubah, chip BT abal-abal | tidak konsisten |
-
-**Keputusan**: kit standar pakai **KodyPad**; firmware robot tetap mendukung stik PS3/PS4/8BitDo lewat Bluepad32 sebagai *upgrade* (dokumentasi pairing di manual). Harga kit sama untuk kedua varian (selisih BOM Rp20.000).
+## Remote: stik PS3 (keputusan Owner 9 Nov 2026)
+KodyPad DIY dibatalkan — remote = **stik PS3 wireless OP Rp59.900–75.000** (Tokopedia, 500+ terjual) lewat library Bluepad32 di ESP32 classic. Konsekuensi: pairing sekali pakai SixaxisPairTool di PC (MAC ESP32 ditulis ke stik), clone kadang gagal autentikasi → stok 1 stik cadangan per 10 kit; alternatif tanpa pairing USB: stik PS4 DualShock bekas Rp150–250rb (Bluepad32 langsung). Tombol: stik kiri = gerak, X = TENDANG, R2 = TURBO, O = KLAKSON. Riset lengkap: `docs/RISET-REMOTE.md`.
 
 ## Arena (HPP Rp490.000)
 
