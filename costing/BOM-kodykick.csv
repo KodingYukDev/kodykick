@@ -11,17 +11,17 @@ No;Bagian;Komponen;Spesifikasi;Qty;Harga satuan eceran (IDR);Subtotal @1;Subtota
 10;Robot;Buzzer pasif KY-006;klakson;1;5000;5000;4250;Tokopedia KY-006 Rp3.000-9.000, Okt 2026 (BOM Michi);
 11;Robot;Kabel Dupont F-F 10 cm;20 pcs;20;375;7500;6375;[ESTIMASI] set 40 pcs Rp15.000;
 12;Robot;Sekrup: M3x16 self-tapping x4 (cangkang), M2x8 x2 (telinga servo), M2x6 x1 (kicker ke horn);;1;3000;3000;2550;[ESTIMASI];motor & modul ditahan cradle/rel/klip cetak + rusuk cangkang, tanpa sekrup; holder baterai double tape/velcro
-13;Robot;Cetak 3D PLA robot;tray + shell + kicker + sirip + kartu + 2 lensa = 141 cm3 (~175 g + 10% support);1;50000;50000;50000;hitung in-house: filamen Rp150/g x 165 g = 24.750 + listrik/depresiasi 8.000 + pasca-proses 10.000 + gagal cetak 8%;jasa print luar ~Rp600-1.000/g = Rp100.000-165.000
+13;Robot;Cetak 3D PLA robot;tray + shell + kicker + sirip + kartu + 2 lensa = 163 cm3 (~200 g + 10% support);1;55000;55000;55000;hitung in-house: filamen Rp150/g x 220 g = 33.000 + listrik/depresiasi 8.000 + pasca-proses 10.000 + gagal cetak 8%;jasa print luar ~Rp600-1.000/g = Rp100.000-165.000
 14;Robot;Bola floorball 72 mm;plastik berlubang, ringan;1;8000;8000;6800;[ESTIMASI] Rp5.000-15.000;
 15;Robot;Kartu nomor + stiker tim;cetak kertas laminasi;1;3000;3000;2550;[ESTIMASI];
-;Robot;SUBTOTAL ROBOT;;;;226900;200365;;
+;Robot;SUBTOTAL ROBOT;;;;231900;205365;;
 21;Remote;Stik PS3 wireless OP (Bluetooth classic);dipakai lewat Bluepad32 di ESP32; pairing USB SixaxisPairTool sekali;1;65000;65000;55250;Tokopedia find/stik-ps3-bluetooth Rp59.900-75.000, Nov 2026;KEPUTUSAN Owner 9 Nov 2026: pakai stik PS, KodyPad DIY dibatalkan. Alternatif stik PS4 DualShock bekas Rp150-250rb (tanpa SixaxisPairTool)
 31;Kit;Kemasan kardus + insert;25x20x12 cm, cetak 1 warna;1;15000;15000;9000;[ESTIMASI];
 32;Kit;Buku panduan A5 12 hal;full colour;1;8000;8000;5000;[ESTIMASI];
-;Kit;TOTAL BOM KIT (robot + stik PS3 + bola + kemasan + buku);;;;314900;269315;;
+;Kit;TOTAL BOM KIT (robot + stik PS3 + bola + kemasan + buku);;;;319900;274315;;
 ;Kit;Upah rakit + QC (30 menit; tanpa solder remote);;;;30000;27000;[ESTIMASI] Rp60.000/jam;
-;Kit;Susut/yield 5%;;;;15745;13466;;
-;Kit;HPP KIT;;;;360645;309781;;
+;Kit;Susut/yield 5%;;;;15995;13716;;
+;Kit;HPP KIT;;;;365895;315031;;
 41;Arena;Triplek 9 mm 122x244;lantai utuh + 1 lembar dinding/gawang;2;130000;260000;234000;Indotrading Mar 2026 Rp129.250 (ex-PPN, grosir) / harga.web.id Rp96.800-200.000;
 42;Arena;Cat hijau tembok/duco 1 kg + kuas;lantai;1;45000;45000;40500;[ESTIMASI];
 43;Arena;Lakban putih 2 cm;garis lapangan;1;15000;15000;13500;[ESTIMASI];

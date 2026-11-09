@@ -1,4 +1,4 @@
-# HPP & Harga — KodyKick (robot soccer) · KodyPad · KodyArena
+# HPP & Harga — KodyKick (robot soccer + stik PS3) · KodyArena
 
 Disusun 9 Nov 2026. Sumber: `BOM-kodykick.csv` (delimiter `;`), harga Tokopedia yang dilihat Nov 2026 + BOM Michi (Okt 2026). Baris tanpa sumber ditandai `[ESTIMASI]`.
 
@@ -6,20 +6,20 @@ Disusun 9 Nov 2026. Sumber: `BOM-kodykick.csv` (delimiter `;`), harga Tokopedia 
 
 | Item | BOM @1 | HPP @1 | HPP @50 | Harga jual usulan | Margin @50 |
 |---|---:|---:|---:|---:|---:|
-| **KodyKick Kit** (1 robot + 1 stik PS3 OP + bola + kemasan + buku) | 314.900 | 361.000 | 310.000 | **Rp549.000** | 44 % |
+| **KodyKick Kit** (1 robot + 1 stik PS3 OP + bola + kemasan + buku) | 319.900 | 366.000 | 315.000 | **Rp549.000** | 43 % |
 | **KodyArena** flat-pack (2 lembar triplek, dicat, gawang, lakban) | 340.000 | 490.000 | 426.000 | **Rp799.000** | 47 % |
 | **Paket Kelas** (2 robot + 2 stik + 2 bola + arena) | — | 1.212.000 | 1.046.000 | **Rp1.999.000** | 48 % |
 | Paket Lomba Sekolah (4 robot + 4 stik + arena + 4 bola) | — | 1.934.000 | 1.666.000 | Rp2.999.000 | 44 % |
 
 Harga jual di bawah Rp600.000 supaya sejajar Michi (Rp599.000) dan di bawah kit robot soccer marketplace (kit ESP32 car lengkap Rp849.000, Cytron Soccer:bit ≈ Rp900.000+ belum termasuk micro:bit).
 
-## Robot (BOM Rp226.900)
+## Robot (BOM Rp231.900)
 
-Komponen termahal: ESP32 DevKit V1 Rp75.000 (35 %), cetak PLA Rp45.000 (21 %), motor+roda Rp33.000.
+Komponen termahal: ESP32 DevKit V1 Rp75.000 (35 %), cetak PLA Rp55.000 (24 %), motor+roda Rp33.000.
 
-- **Kenapa ESP32 classic, bukan C3?** Hanya ESP32 classic punya Bluetooth Classic (BR/EDR). Stik PS3/PS4/8BitDo/Android gamepad murah semuanya BR/EDR → Bluepad32 di C3/S3 **tidak bisa** (docs Bluepad32). ESP-NOW ke KodyPad jalan di semua chip. Hemat Rp40.000 kalau pakai C3 tapi kehilangan opsi stik PS.
+- **Kenapa ESP32 classic, bukan C3?** Hanya ESP32 classic punya Bluetooth Classic (BR/EDR). Stik PS3/PS4/8BitDo/Android gamepad murah semuanya BR/EDR → Bluepad32 di C3/S3 **tidak bisa** (docs Bluepad32). Stik PS = keputusan Owner, jadi ESP32 classic wajib.
 - **Holder 4×AA 2×2 dengan saklar** (model asli Adafruit 830, Rp12.000) — saklar terpisah tidak perlu. **Baterai 4×AA (6 V)**, bukan LiPo: aman untuk anak, orang tua bisa beli di warung, tanpa charger/sertifikasi baterai. TT motor 3–6 V, DRV8833 2,7–10,8 V, ESP32 VIN 5–12 V → semua langsung dari 6 V (motor via DRV8833, ESP32 via VIN; servo dari 6 V lewat pin VIN — SG90 toleran sampai 6 V).
-- **Cetak 3D in-house Rp45.000** (165 g PLA). Kalau cetak di jasa luar jadi Rp100.000–165.000 → BOM robot naik ke ±Rp300.000; jangan.
+- **Cetak 3D in-house Rp55.000** (±200 g PLA, 163 cm³). Kalau cetak di jasa luar jadi Rp100.000–165.000 → BOM robot naik ke ±Rp300.000; jangan.
 - Pengurangan biaya kalau perlu: hilangkan servo kicker + buzzer (−Rp20.000, scoop pasif tetap bisa dorong bola), beli motor+roda paket (−Rp6.000).
 
 ## Remote: stik PS3 (keputusan Owner 9 Nov 2026)

@@ -12,13 +12,14 @@ Robot bola 2 roda yang dirakit anak SD–SMP, dikendalikan **stik PS3/PS4** (Blu
 
 ## Isi folder
 - `components/` — **STEP asli komponen beli** (TT motor, holder baterai, joystick, tactile, saklar = Adafruit MIT; SG90 = FreeCAD-library CC-BY; modul ESP32-WROOM-32E = Espressif CC-BY-SA) + `LICENSES.md`. Yang masih dimodelkan dari datasheet: PCB DevKit V1, PCB KY-023, modul DRV8833, roda TT, bola.
-- `cad/kodykick_cad.py` — CAD parametrik FreeCAD 1.1 headless (robot, pad, arena, bola). `cad/check_clash.py` — cek tabrakan antar part (harus `CLASH-CHECK OK`).
-- `out/` — hasil CAD: `parts/*.stl` (68 part), `parts.json` (warna, grup, bbox, volume cetak), `kodykick.step`, `kodypad.step`, `kodyarena.step`, `renders/` (foto + video Blender).
+- `cad/kodykick_cad.py` — CAD parametrik FreeCAD 1.1 headless (robot, arena, bola). `cad/check_clash.py` — cek tabrakan antar part (harus `CLASH-CHECK OK`).
+- `out/` — hasil CAD: `parts/*.stl` (52 part), `parts.json` (warna, grup, bbox, volume cetak, sumber), `kodykick.step`, `kodyarena.step`, `real/` (render realistis Cycles), `renders/` (EEVEE cepat).
 - `render/blender_real.py` — **render realistis** Cycles (foto hero/inside/arena + video `breakdown` exploded & `match`). `render/blender_kodykick.py` = versi cepat EEVEE lama.
-- `costing/BOM-kodykick.csv` + `HPP-KODYKICK.md` — BOM lengkap robot/pad/arena, HPP, harga, margin.
+- `costing/BOM-kodykick.csv` + `HPP-KODYKICK.md` — BOM lengkap robot/stik/arena, HPP, harga, margin.
 - `docs/RISET-REMOTE.md` — riset remote (KodyPad vs stik PS3 vs BLE), keputusan.
 - `docs/ARENA-TRIPLEK.md` + `arena-cutplan.svg` — rencana potong 2 lembar triplek.
 - `docs/NASKAH-VIDEO.md` — naskah reel 21 s, VO, caption feed.
+- `docs/RAKIT.md` — **panduan rakit prototipe nyata**: cetak, urutan rakit, wiring pin, pairing stik PS3, checklist toleransi.
 - `firmware/kodykick_robot/` — Arduino ESP32 + Bluepad32 (stik PS3/PS4), failsafe, kicker.
 - Video iklan: `Shared Libraries/kodingyuk-social-kit` komposisi `KodyKick-Ad` (`src/ads/KodyKickAd.tsx`).
 
@@ -28,9 +29,9 @@ Robot bola 2 roda yang dirakit anak SD–SMP, dikendalikan **stik PS3/PS4** (Blu
 "C:/Users/tunas/AppData/Local/Programs/FreeCAD 1.1/bin/freecadcmd.exe" cad/kodykick_cad.py
 "C:/Users/tunas/AppData/Local/Programs/FreeCAD 1.1/bin/freecadcmd.exe" cad/check_clash.py
 # Foto + video
-SAMPLES=24 bash render/run_all.sh          # out/renders/{hero,pad,kit,arena,inside,padinside}.png, {spin,match}.mp4
+bash render/run_real.sh                    # out/real/{hero,inside,arena}.png + breakdown.mp4 + match.mp4 (Cycles, ±2 jam CPU)
 # Reel 9:16
-cd "../../Shared Libraries/kodingyuk-social-kit" && cp ../../Robotics/KodyKick/out/renders/* public/media/kodykick/ && bash scripts/finish.sh KodyKick-Ad kodykick-ad
+cd "../../Shared Libraries/kodingyuk-social-kit" && cp ../../Robotics/KodyKick/out/real/* public/media/kodykick/ && bash scripts/finish.sh KodyKick-Ad kodykick-ad
 ```
 
 ## Cetak 3D
