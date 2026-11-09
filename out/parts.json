@@ -1,0 +1,1159 @@
+{
+ "colors": {
+  "yellow": "#FFDE00",
+  "navy": "#22303A",
+  "red": "#E6232A",
+  "paper": "#F7F9F9",
+  "ink": "#232323",
+  "teal": "#0C7A89",
+  "sun": "#F99007",
+  "pcb": "#1b5e3a",
+  "pcb_blue": "#1f3f8f",
+  "pcb_red": "#9b1c1c",
+  "metal": "#b9bdc2",
+  "black": "#16181a",
+  "tt_yellow": "#f2c230",
+  "tire": "#2b2b2b",
+  "rim": "#f2e26b",
+  "white": "#fafafa",
+  "wood": "#d9b98a",
+  "green": "#2e8b3c",
+  "line": "#f5f5f5",
+  "glass": "#9fd8ff",
+  "servo_blue": "#2a62c9",
+  "orange": "#ff7a1a"
+ },
+ "parts": [
+  {
+   "name": "robot_base_tray",
+   "color": "navy",
+   "group": "robot",
+   "note": "cetak PLA, tray bawah: motor, baterai, ESP32, caster",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 62.26,
+   "bbox": [
+    -54.0,
+    -78.0,
+    6.0,
+    54.0,
+    80.0,
+    35.25
+   ]
+  },
+  {
+   "name": "robot_top_shell",
+   "color": "yellow",
+   "group": "robot",
+   "note": "cetak PLA, cangkang + scoop bola",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 60.34,
+   "bbox": [
+    -54.0,
+    -78.0,
+    28.25,
+    54.0,
+    80.0,
+    72.0
+   ]
+  },
+  {
+   "name": "robot_fin",
+   "color": "red",
+   "group": "robot",
+   "note": "cetak PLA, sirip tim (warna tim)",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 1.15,
+   "bbox": [
+    -1.2,
+    -62.0,
+    69.0,
+    1.2,
+    -30.0,
+    86.0
+   ]
+  },
+  {
+   "name": "robot_number_card",
+   "color": "paper",
+   "group": "robot",
+   "note": "kartu nomor punggung (cetak kertas/PLA)",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 1.47,
+   "bbox": [
+    -21.5,
+    -26.5,
+    71.0,
+    21.5,
+    16.5,
+    71.8
+   ]
+  },
+  {
+   "name": "robot_eye_l",
+   "color": "glass",
+   "group": "robot",
+   "note": "lensa LED mata (PLA transparan)",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 0.22,
+   "bbox": [
+    -24.79,
+    45.0,
+    50.2,
+    -15.21,
+    48.0,
+    59.8
+   ]
+  },
+  {
+   "name": "robot_eye_r",
+   "color": "glass",
+   "group": "robot",
+   "note": "lensa LED mata (PLA transparan)",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 0.22,
+   "bbox": [
+    15.21,
+    45.0,
+    50.2,
+    24.79,
+    48.0,
+    59.8
+   ]
+  },
+  {
+   "name": "tt_motor_l",
+   "color": "tt_yellow",
+   "group": "robot",
+   "note": "TT gear motor 1:48 3-6 V",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -51.75,
+    -59.0,
+    21.25,
+    -31.75,
+    11.0,
+    43.75
+   ]
+  },
+  {
+   "name": "tt_shaft_l",
+   "color": "metal",
+   "group": "robot",
+   "note": "poros motor",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -81.0,
+    -2.59,
+    29.9,
+    -27.5,
+    2.59,
+    35.1
+   ]
+  },
+  {
+   "name": "wheel_tire_l",
+   "color": "tire",
+   "group": "robot",
+   "note": "roda TT 65 mm karet",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -82.0,
+    -32.47,
+    0.03,
+    -56.0,
+    32.47,
+    64.97
+   ]
+  },
+  {
+   "name": "wheel_rim_l",
+   "color": "rim",
+   "group": "robot",
+   "note": "velg roda TT",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -82.0,
+    -26.46,
+    6.0,
+    -56.0,
+    26.46,
+    59.0
+   ]
+  },
+  {
+   "name": "tt_motor_r",
+   "color": "tt_yellow",
+   "group": "robot",
+   "note": "TT gear motor 1:48 3-6 V",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    31.75,
+    -59.0,
+    21.25,
+    51.75,
+    11.0,
+    43.75
+   ]
+  },
+  {
+   "name": "tt_shaft_r",
+   "color": "metal",
+   "group": "robot",
+   "note": "poros motor",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    27.5,
+    -2.59,
+    29.9,
+    81.0,
+    2.59,
+    35.1
+   ]
+  },
+  {
+   "name": "wheel_tire_r",
+   "color": "tire",
+   "group": "robot",
+   "note": "roda TT 65 mm karet",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    56.0,
+    -32.47,
+    0.03,
+    82.0,
+    32.47,
+    64.97
+   ]
+  },
+  {
+   "name": "wheel_rim_r",
+   "color": "rim",
+   "group": "robot",
+   "note": "velg roda TT",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    56.0,
+    -26.46,
+    6.0,
+    82.0,
+    26.46,
+    59.0
+   ]
+  },
+  {
+   "name": "esp32_pcb",
+   "color": "black",
+   "group": "robot",
+   "note": "ESP32 DevKit V1 30 pin (BT classic untuk stik PS)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -26.15,
+    -9.75,
+    32.25,
+    2.15,
+    41.75,
+    33.85
+   ]
+  },
+  {
+   "name": "esp32_module",
+   "color": "metal",
+   "group": "robot",
+   "note": "modul WROOM-32",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -21.0,
+    14.25,
+    33.85,
+    -3.0,
+    39.75,
+    37.05
+   ]
+  },
+  {
+   "name": "esp32_usb",
+   "color": "metal",
+   "group": "robot",
+   "note": "micro-USB",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -15.75,
+    -11.25,
+    33.85,
+    -8.25,
+    -5.65,
+    36.65
+   ]
+  },
+  {
+   "name": "esp32_headers",
+   "color": "ink",
+   "group": "robot",
+   "note": "pin header",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -25.15,
+    -3.05,
+    23.75,
+    1.15,
+    35.05,
+    32.25
+   ]
+  },
+  {
+   "name": "drv8833_pcb",
+   "color": "pcb_blue",
+   "group": "robot",
+   "note": "driver motor DRV8833 2 ch 1,5 A",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    17.0,
+    16.0,
+    22.25,
+    35.0,
+    36.0,
+    23.85
+   ]
+  },
+  {
+   "name": "drv8833_chip",
+   "color": "black",
+   "group": "robot",
+   "note": "IC DRV8833",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    23.5,
+    22.75,
+    23.85,
+    28.5,
+    29.25,
+    24.85
+   ]
+  },
+  {
+   "name": "aa_holder",
+   "color": "black",
+   "group": "robot",
+   "note": "holder 4xAA 2x2 (6 V)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -29.0,
+    -75.0,
+    21.75,
+    29.0,
+    -13.0,
+    36.75
+   ]
+  },
+  {
+   "name": "aa_cells",
+   "color": "metal",
+   "group": "robot",
+   "note": "4 baterai AA",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -28.73,
+    -69.0,
+    22.75,
+    28.73,
+    -19.0,
+    36.75
+   ]
+  },
+  {
+   "name": "sg90_body",
+   "color": "servo_blue",
+   "group": "robot",
+   "note": "servo SG90 kicker (poros vertikal)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -43.4,
+    43.9,
+    11.25,
+    -11.1,
+    56.1,
+    37.95
+   ]
+  },
+  {
+   "name": "sg90_shaft",
+   "color": "white",
+   "group": "robot",
+   "note": "poros servo",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -24.4,
+    47.61,
+    37.95,
+    -19.6,
+    52.39,
+    41.95
+   ]
+  },
+  {
+   "name": "sg90_horn",
+   "color": "white",
+   "group": "robot",
+   "note": "horn servo",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -25.5,
+    46.51,
+    40.35,
+    -4.0,
+    53.49,
+    41.95
+   ]
+  },
+  {
+   "name": "robot_kicker",
+   "color": "red",
+   "group": "robot",
+   "note": "cetak PLA, pemukul bola di horn servo",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 2.84,
+   "bbox": [
+    -26.99,
+    45.01,
+    29.95,
+    24.0,
+    59.0,
+    51.95
+   ]
+  },
+  {
+   "name": "switch_body",
+   "color": "black",
+   "group": "robot",
+   "note": "saklar geser power",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -41.0,
+    -79.0,
+    22.25,
+    -29.0,
+    -73.0,
+    28.25
+   ]
+  },
+  {
+   "name": "switch_knob",
+   "color": "white",
+   "group": "robot",
+   "note": "knob saklar",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -34.75,
+    -77.25,
+    28.25,
+    -31.25,
+    -74.75,
+    32.25
+   ]
+  },
+  {
+   "name": "ball",
+   "color": "white",
+   "group": "ball",
+   "note": "bola plastik berlubang (floorball) 72 mm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -35.96,
+    56.04,
+    0.0,
+    36.0,
+    127.96,
+    72.0
+   ]
+  },
+  {
+   "name": "caster_ball",
+   "color": "metal",
+   "group": "robot",
+   "note": "bola baja 1/2 inch (gotri) di cup cetak",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -6.32,
+    -70.32,
+    0.0,
+    6.33,
+    -57.68,
+    12.7
+   ]
+  },
+  {
+   "name": "pad_shell_top",
+   "color": "yellow",
+   "group": "pad",
+   "note": "cetak PLA, cangkang atas KodyPad",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 29.9,
+   "bbox": [
+    -75.0,
+    -48.0,
+    9.0,
+    75.0,
+    37.0,
+    26.0
+   ]
+  },
+  {
+   "name": "pad_shell_bottom",
+   "color": "navy",
+   "group": "pad",
+   "note": "cetak PLA, cangkang bawah KodyPad",
+   "printed": true,
+   "qty": 1,
+   "volume_cm3": 28.24,
+   "bbox": [
+    -75.0,
+    -48.0,
+    -0.0,
+    75.0,
+    37.0,
+    9.0
+   ]
+  },
+  {
+   "name": "pad_joy_pcb",
+   "color": "pcb",
+   "group": "pad",
+   "note": "joystick KY-023",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -58.0,
+    -13.0,
+    7.0,
+    -32.0,
+    21.0,
+    8.6
+   ]
+  },
+  {
+   "name": "pad_joy_body",
+   "color": "black",
+   "group": "pad",
+   "note": "",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -53.0,
+    -4.0,
+    8.6,
+    -37.0,
+    12.0,
+    25.6
+   ]
+  },
+  {
+   "name": "pad_joy_cap",
+   "color": "ink",
+   "group": "pad",
+   "note": "",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -55.0,
+    -5.97,
+    19.0,
+    -35.0,
+    13.97,
+    30.0
+   ]
+  },
+  {
+   "name": "pad_btn_kick",
+   "color": "red",
+   "group": "pad",
+   "note": "tombol TENDANG (tactile 12 mm + cap)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    36.0,
+    1.03,
+    8.6,
+    54.0,
+    18.97,
+    28.0
+   ]
+  },
+  {
+   "name": "pad_btn_turbo",
+   "color": "teal",
+   "group": "pad",
+   "note": "tombol TURBO",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    19.0,
+    -8.0,
+    8.6,
+    31.0,
+    4.0,
+    28.0
+   ]
+  },
+  {
+   "name": "pad_btn_horn",
+   "color": "sun",
+   "group": "pad",
+   "note": "tombol KLAKSON/buzzer",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    59.0,
+    -8.0,
+    8.6,
+    71.0,
+    4.0,
+    28.0
+   ]
+  },
+  {
+   "name": "pad_main_pcb",
+   "color": "pcb",
+   "group": "pad",
+   "note": "PCB lubang 13x3,5 cm (perfboard)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    21.0,
+    -11.0,
+    7.0,
+    69.0,
+    19.0,
+    8.6
+   ]
+  },
+  {
+   "name": "pad_c3",
+   "color": "black",
+   "group": "pad",
+   "note": "ESP32-C3 Super Mini (ESP-NOW)",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -9.0,
+    -36.5,
+    16.0,
+    9.0,
+    -12.75,
+    20.2
+   ]
+  },
+  {
+   "name": "pad_aaa",
+   "color": "black",
+   "group": "pad",
+   "note": "holder 3xAAA 4,5 V",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -19.0,
+    -28.0,
+    2.5,
+    19.0,
+    24.0,
+    15.5
+   ]
+  },
+  {
+   "name": "pad_led",
+   "color": "glass",
+   "group": "pad",
+   "note": "LED status 3 mm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1.6,
+    16.4,
+    20.0,
+    1.6,
+    19.6,
+    26.0
+   ]
+  },
+  {
+   "name": "pad_switch",
+   "color": "black",
+   "group": "pad",
+   "note": "saklar geser",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -6.0,
+    23.0,
+    17.0,
+    6.0,
+    29.0,
+    27.0
+   ]
+  },
+  {
+   "name": "arena_floor",
+   "color": "green",
+   "group": "arena",
+   "note": "triplek 9 mm 122x244 utuh, cat hijau",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1220.0,
+    -610.0,
+    0.0,
+    1220.0,
+    610.0,
+    9.0
+   ]
+  },
+  {
+   "name": "arena_wall_long_a",
+   "color": "wood",
+   "group": "arena",
+   "note": "strip triplek 12 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1220.0,
+    -610.0,
+    9.0,
+    1220.0,
+    -601.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_wall_long_b",
+   "color": "wood",
+   "group": "arena",
+   "note": "strip triplek 12 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1220.0,
+    601.0,
+    9.0,
+    1220.0,
+    610.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_wall_short_a",
+   "color": "wood",
+   "group": "arena",
+   "note": "strip triplek 12 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1220.0,
+    -601.0,
+    9.0,
+    -1211.0,
+    601.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_wall_short_b",
+   "color": "wood",
+   "group": "arena",
+   "note": "strip triplek 12 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1211.0,
+    -601.0,
+    9.0,
+    1220.0,
+    601.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_goal_a_side_l",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    -200.0,
+    9.0,
+    -1091.0,
+    -191.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_goal_a_side_r",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    191.0,
+    9.0,
+    -1091.0,
+    200.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_goal_a_roof",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    -209.0,
+    129.0,
+    -1091.0,
+    209.0,
+    138.0
+   ]
+  },
+  {
+   "name": "arena_line_goal_a",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1091.0,
+    -200.0,
+    9.0,
+    -1071.0,
+    200.0,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_goal_b_side_l",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1091.0,
+    -200.0,
+    9.0,
+    1211.0,
+    -191.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_goal_b_side_r",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1091.0,
+    191.0,
+    9.0,
+    1211.0,
+    200.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_goal_b_roof",
+   "color": "wood",
+   "group": "arena",
+   "note": "gawang 40 cm lebar x 12 cm dalam",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1091.0,
+    -209.0,
+    129.0,
+    1211.0,
+    209.0,
+    138.0
+   ]
+  },
+  {
+   "name": "arena_line_goal_b",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1071.0,
+    -200.0,
+    9.0,
+    1091.0,
+    200.0,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_corner_al",
+   "color": "wood",
+   "group": "arena",
+   "note": "pojok 45 derajat segitiga 10 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    -601.0,
+    9.0,
+    -1111.0,
+    -501.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_corner_ar",
+   "color": "wood",
+   "group": "arena",
+   "note": "pojok 45 derajat segitiga 10 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    501.0,
+    9.0,
+    -1111.0,
+    601.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_corner_bl",
+   "color": "wood",
+   "group": "arena",
+   "note": "pojok 45 derajat segitiga 10 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1111.0,
+    -601.0,
+    9.0,
+    1211.0,
+    -501.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_corner_br",
+   "color": "wood",
+   "group": "arena",
+   "note": "pojok 45 derajat segitiga 10 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    1111.0,
+    501.0,
+    9.0,
+    1211.0,
+    601.0,
+    129.0
+   ]
+  },
+  {
+   "name": "arena_line_center",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -10.0,
+    -601.0,
+    9.0,
+    10.0,
+    601.0,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_line_circle",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -309.75,
+    -309.94,
+    9.0,
+    310.0,
+    309.94,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_line_pen_a",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -1211.0,
+    -400.0,
+    9.0,
+    -961.0,
+    400.0,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_line_pen_b",
+   "color": "line",
+   "group": "arena",
+   "note": "lakban putih 2 cm",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    961.0,
+    -400.0,
+    9.0,
+    1211.0,
+    400.0,
+    10.0
+   ]
+  },
+  {
+   "name": "arena_spots",
+   "color": "line",
+   "group": "arena",
+   "note": "titik netral",
+   "printed": false,
+   "qty": 1,
+   "volume_cm3": null,
+   "bbox": [
+    -460.0,
+    -309.97,
+    9.0,
+    460.0,
+    309.97,
+    10.0
+   ]
+  }
+ ],
+ "params": {
+  "wheel_d": 65.0,
+  "wheel_x": 69.0,
+  "axle_z": 32.5,
+  "base": [
+   108.0,
+   -78.0,
+   80.0
+  ],
+  "shell_top": 72.0,
+  "ball_d": 72.0,
+  "scoop_cy": 92.0,
+  "pad": [
+   150.0,
+   74.0,
+   26.0
+  ],
+  "arena": [
+   2440.0,
+   1220.0,
+   120.0,
+   400.0,
+   120.0,
+   9.0
+  ]
+ }
+}

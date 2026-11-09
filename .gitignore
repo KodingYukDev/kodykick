@@ -1,0 +1,5 @@
+__pycache__/
+out/test/
+out/renders/_*
+*.FCBak
+node_modules/
